@@ -4,15 +4,13 @@
 import os
 #import sys
 import stat
+import subprocess
 
 # hard-coding test container for now
 
 # need root access to start containers
-st = os.stat("./start_container.py")  # possibly heavy?
-if not bool(st.st_mode & stat.S_IXUSR):
-    print "permission denied, run as root"
-    exit(1)
 
-
+subprocess.call(["lxc-start", "-n", "test"])
+print subprocess.call(["lxc-info", "-n", "test"])
 
 
