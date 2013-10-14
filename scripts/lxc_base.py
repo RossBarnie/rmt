@@ -3,6 +3,8 @@
 
 import subprocess
 import string
+import psutil
+from socket import getfqdn
 
 # hard-coding test container for now
 
@@ -65,8 +67,13 @@ def stop(container_name):
 
 def pi_info():
     # needs work...need to parse alot of this, may look for alternatives
-    info = subprocess.check_output(["top", "-n", "1"]).splitlines()
-    print info[0]
+    # alternative found: psutils
+    cpu_usage = psutil.cpu_percent(interval=1) * 100
+    ram_total = psutil.virtual_memory().total / 1024
+    ram_used = psutil.virtual_memory().used / 1024
+    return {"cpu_usage" : cpu_usage,
+            "ram_total" : ram_total,
+            "ram_used" : ram_used}
 
 
 def check_input(to_check):
