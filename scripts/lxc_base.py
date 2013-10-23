@@ -1,5 +1,5 @@
 # Script to start an LXC container, assumes dependencies resolved
-import subprocess
+import command
 import string
 import psutil
 
@@ -12,12 +12,12 @@ __containers = []
 
 def __get_containers():
     global __containers
-    __containers = subprocess.check_output(["lxc-ls"])
+    __containers = command.Command(["lxc-ls"]).execute(True)
     __containers = __containers.splitlines()
     
 
 def root_access():
-    root = subprocess.call(["./check_permissions.sh"])
+    root = command.Command(["./check_permissions.sh"]).execute(False)
     return root
     
 
@@ -33,8 +33,8 @@ def start(container_name):
         return res
 
     if container_exists(container_name):
-        subprocess.call(["lxc-start", "-n", container_name, "-d"])
-        subprocess.call(["lxc-info", "-n", container_name])
+        command.Command(["lxc-start", "-n", container_name, "-d"]).execute(False)
+        command.Command(["lxc-info", "-n", container_name]).execute(False)
         res = True
     else:
         print container_name, "container does not exist"
@@ -53,8 +53,8 @@ def stop(container_name):
         return res
 
     if container_exists(container_name):
-        subprocess.call(["lxc-stop", "-n", container_name])
-        subprocess.call(["lxc-info", "-n", container_name])
+        command.Command(["lxc-stop", "-n", container_name]).execute(False)
+        command.Command(["lxc-info", "-n", container_name]).execute(False)
         res = True
     else:
         print container_name, "container does not exist"
