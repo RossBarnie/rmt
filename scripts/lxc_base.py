@@ -7,13 +7,13 @@ import psutil
 
 # need root access to start containers
 
-_containers = []
+__containers = []
 
 
-def get_containers():
-    global _containers
-    _containers = subprocess.check_output(["lxc-ls"])
-    _containers = _containers.splitlines()
+def __get_containers():
+    global __containers
+    __containers = subprocess.check_output(["lxc-ls"])
+    __containers = __containers.splitlines()
     
 
 def root_access():
@@ -23,7 +23,7 @@ def root_access():
 
 def start(container_name):
     res = False
-    get_containers()
+    __get_containers()
 
     if not check_input(container_name):
         print "Invalid input\n"
@@ -43,7 +43,7 @@ def start(container_name):
 
 
 def stop(container_name):
-    get_containers()
+    __get_containers()
     res = False
 
     if root_access() == 1:
@@ -78,5 +78,5 @@ def check_input(to_check):
 
 
 def container_exists(container_name):
-    global _containers
-    return container_name in _containers
+    global __containers
+    return container_name in __containers
