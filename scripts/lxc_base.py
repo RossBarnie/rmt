@@ -3,8 +3,6 @@ import command
 import string
 import psutil
 
-# hard-coding test container for now
-
 # need root access to start containers
 
 __containers = []
@@ -12,12 +10,17 @@ __containers = []
 
 def __get_containers():
     global __containers
-    __containers = command.Command(["lxc-ls"]).execute(True)
-    __containers = __containers.splitlines()
+    com_out = command.Command(["lxc-ls"]).execute(True)
+    if com_out.get("comm_retval") is not None:
+        __containers = com_out.get("comm_retval")
+        __containers = __containers.splitlines()
+    else:
+        print "Error retrieving container list, emptying container list"
+        __containers = []
     
 
 def root_access():
-    root = command.Command(["./check_permissions.sh"]).execute(False)
+    root = command.Command(["./check_permissions.sh"]).execute().get("comm_retval")
     return root
     
 
@@ -33,8 +36,8 @@ def start(container_name):
         return res
 
     if container_exists(container_name):
-        command.Command(["lxc-start", "-n", container_name, "-d"]).execute(False)
-        command.Command(["lxc-info", "-n", container_name]).execute(False)
+        command.Command(["lxc-start", "-n", container_name, "-d"]).execute().get("comm_retval")
+        command.Command(["lxc-info", "-n", container_name]).execute().get("comm_retval")
         res = True
     else:
         print container_name, "container does not exist"
@@ -53,8 +56,8 @@ def stop(container_name):
         return res
 
     if container_exists(container_name):
-        command.Command(["lxc-stop", "-n", container_name]).execute(False)
-        command.Command(["lxc-info", "-n", container_name]).execute(False)
+        command.Command(["lxc-stop", "-n", container_name]).execute().get("comm_retval")
+        command.Command(["lxc-info", "-n", container_name]).execute().get("comm_retval")
         res = True
     else:
         print container_name, "container does not exist"
