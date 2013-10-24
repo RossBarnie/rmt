@@ -2,11 +2,12 @@
 import command
 import string
 import psutil
+import os
 
 # need root access to start containers
 
 __containers = []
-
+__euid = os.geteuid()  # integer
 
 def __get_containers():
     global __containers
@@ -20,8 +21,7 @@ def __get_containers():
     
 
 def root_access():
-    root = command.Command(["./check_permissions.sh"]).execute().get("comm_retval")
-    return root
+    return __euid == 0
     
 
 def start(container_name):
