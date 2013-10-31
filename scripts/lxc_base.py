@@ -3,6 +3,7 @@ import command
 import string
 import psutil
 import os
+import sys
 
 # need root access to start containers
 
@@ -27,7 +28,6 @@ def root_access():
 
 def start(container_name):
     res = False
-    __get_containers()
 
     if not check_input(container_name):
         print "Invalid input\n"
@@ -38,8 +38,10 @@ def start(container_name):
         return res
 
     if container_exists(container_name):
-        command.Command(["lxc-start", "-n", container_name, "-d"]).execute().get("comm_retval")
+        exit_val = command.Command(["lxc-start", "-n", container_name, "-d"]).execute()
         print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
+        if exit_val < 0:
+            sys.stderr.write("exit value was", exit_val)
         res = True
     else:
         print container_name, "container does not exist"
@@ -48,7 +50,6 @@ def start(container_name):
 
 
 def stop(container_name):
-    __get_containers()
     res = False
 
     if not root_access():
@@ -58,7 +59,7 @@ def stop(container_name):
         return res
 
     if container_exists(container_name):
-        command.Command(["lxc-stop", "-n", container_name]).execute().get("comm_retval")
+        command.Command(["lxc-stop", "-n", container_name]).execute()
         print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
         res = True
     else:
@@ -95,5 +96,6 @@ def list_containers():
 
 
 def container_exists(container_name):
+    __get_containers()
     global __containers
     return container_name in __containers
