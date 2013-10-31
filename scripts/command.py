@@ -3,7 +3,6 @@ import threading
 import Queue
 
 
-
 class Command:
     """ Class to represent an OS-level command """
 

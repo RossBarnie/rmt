@@ -9,6 +9,7 @@ import os
 __containers = []
 __euid = os.geteuid()  # integer
 
+
 def __get_containers():
     global __containers
     com_out = command.Command(["lxc-ls"]).execute(True)
@@ -32,7 +33,8 @@ def start(container_name):
         print "Invalid input\n"
         return res
 
-    if root_access() == 1:
+    if not root_access():
+        print "You do not have appropriate permissions to start a container"
         return res
 
     if container_exists(container_name):
@@ -49,7 +51,7 @@ def stop(container_name):
     __get_containers()
     res = False
 
-    if root_access() == 1:
+    if not root_access():
         return res
 
     if not check_input(container_name):
@@ -66,6 +68,10 @@ def stop(container_name):
 
 
 def pi_info():
+    # issue #1 is caused somewhere here,
+    # documentation for psutil says the following call should be what I'm looking for,
+    # but always returns 100 percent...
+    # see issue #1 comments
     cpu_usage = psutil.cpu_percent(interval=1)
     ram_total = psutil.virtual_memory().total / 1024
     ram_used = psutil.virtual_memory().used / 1024
