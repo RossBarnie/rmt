@@ -12,7 +12,7 @@ __euid = os.geteuid()  # integer
 
 def __get_containers():
     global __containers
-    com_out = command.Command(["lxc-ls"]).execute(True)
+    com_out = command.Command(["lxc-ls"]).execute(return_output=True)
     if com_out.get("comm_retval") is not None:
         __containers = com_out.get("comm_retval")
         __containers = __containers.splitlines()
@@ -39,7 +39,7 @@ def start(container_name):
 
     if container_exists(container_name):
         command.Command(["lxc-start", "-n", container_name, "-d"]).execute().get("comm_retval")
-        command.Command(["lxc-info", "-n", container_name]).execute().get("comm_retval")
+        print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
         res = True
     else:
         print container_name, "container does not exist"
@@ -59,7 +59,7 @@ def stop(container_name):
 
     if container_exists(container_name):
         command.Command(["lxc-stop", "-n", container_name]).execute().get("comm_retval")
-        command.Command(["lxc-info", "-n", container_name]).execute().get("comm_retval")
+        print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
         res = True
     else:
         print container_name, "container does not exist"
@@ -84,6 +84,14 @@ def check_input(to_check):
     # checks input for non-printable characters,
     # returns true if to_check has no non-printable characters
     return all(char in string.printable for char in to_check)
+
+
+def list_containers():
+    __get_containers()
+    global __containers
+    for c in __containers:
+        print c
+    return
 
 
 def container_exists(container_name):

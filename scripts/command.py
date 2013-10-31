@@ -11,10 +11,15 @@ class Command:
         self.queue = Queue.Queue(maxsize=10)
 
     def __execute_com(self, return_output):
-        if return_output:
-            self.queue.put(subprocess.check_output(self.comm))
-            return
-        self.queue.put(subprocess.call(self.comm))
+        try:
+            proc = subprocess.Popen(self.comm, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+            if proc.returncode < 0:
+                print "command ", self.comm, "was terminated by signal", proc.returncode
+            if return_output:
+                self.queue.put(out, timeout=5)
+        except subprocess.CalledProcessError as e:
+            print "command", self.comm, "caused exception, ", e
         return
 
     def execute(self, return_output=False, timeout=10.0):
@@ -22,8 +27,10 @@ class Command:
         t.start()
         t.join(timeout=timeout)
         is_timedout = t.isAlive()
+        comm_retval=""
         try:
-            comm_retval = self.queue.get()
+            if return_output:
+                comm_retval = self.queue.get()
         except Queue.Empty:
             comm_retval = None
 
