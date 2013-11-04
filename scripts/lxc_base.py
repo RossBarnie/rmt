@@ -4,6 +4,7 @@ import string
 import psutil
 import os
 import sys
+import container_usage
 
 # need root access to start containers
 
@@ -99,3 +100,10 @@ def container_exists(container_name):
     __get_containers()
     global __containers
     return container_name in __containers
+
+
+def get_container_usage(container_name):
+    if container_exists(container_name):
+        # following calculation returns value in MiB
+        print (container_usage.memory(container_name)/1024.0)/1024.0
+    return
