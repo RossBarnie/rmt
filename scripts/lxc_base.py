@@ -91,9 +91,7 @@ def check_input(to_check):
 def list_containers():
     __get_containers()
     global __containers
-    for c in __containers:
-        print c
-    return
+    return __containers
 
 
 def container_exists(container_name):

@@ -16,7 +16,6 @@ class Command:
 
         def target():
             try:
-                print "Starting command"
                 self.process = subprocess.Popen(self.comm, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = self.process.communicate()
                 if self.process.returncode < 0:
@@ -28,16 +27,11 @@ class Command:
             return
 
         thread = threading.Thread(target=target)
-        print "starting thread"
         thread.start()
-        print "joining with timeout of", timeout
         thread.join(timeout=timeout)
-        print "finished initial join"
         is_alive = thread.is_alive()
         if is_alive:
-            print "thread is alive, terminating process"
             self.process.terminate()
-            print "joining thread, no timeout specified"
             thread.join()
         comm_retval = None
         if return_output:
