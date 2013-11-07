@@ -27,7 +27,7 @@ class Command:
                 print "command", self.comm, "caused exception, ", e
             return
 
-        thread = threading.Thread(target=target())
+        thread = threading.Thread(target=target)
         print "starting thread"
         thread.start()
         print "joining with timeout of", timeout
