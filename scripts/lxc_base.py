@@ -27,7 +27,7 @@ def root_access():
     return __euid == 0
     
 
-def start(container_name):
+def start(cmd_list, container_name):
     res = False
 
     if not check_input(container_name):
@@ -39,8 +39,8 @@ def start(container_name):
         return res
 
     if container_exists(container_name):
-        exit_val = command.Command(["lxc-start", "-n", container_name, "-d"]).execute()
-        print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
+        exit_val = command.Command(cmd_list).execute()
+        #print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
         if exit_val < 0:
             sys.stderr.write("exit value was", exit_val)
         res = True
@@ -50,7 +50,7 @@ def start(container_name):
     return res
 
 
-def stop(container_name):
+def stop(cmd_list, container_name):
     res = False
 
     if not root_access():
@@ -60,8 +60,8 @@ def stop(container_name):
         return res
 
     if container_exists(container_name):
-        command.Command(["lxc-stop", "-n", container_name]).execute()
-        print command.Command(["lxc-info", "-n", container_name]).execute(return_output=True).get("comm_retval")
+        command.Command(cmd_list).execute()
+       # print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
         res = True
     else:
         print container_name, "container does not exist"
@@ -105,3 +105,7 @@ def get_container_usage(container_name):
         # following calculation returns value in MiB
         print (container_usage.memory(container_name)/1024.0)/1024.0
     return
+
+@staticmethod
+def construct_start_command(container_name):
+    return command.Command(["lxc-start", "-n", container_name, "-d"])
