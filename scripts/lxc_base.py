@@ -25,12 +25,12 @@ def __get_containers():
 
 def root_access():
     return __euid == 0
-    
 
-def start(cmd_list, container_name):
+
+def start(cmd_dict):
     res = False
 
-    if not check_input(container_name):
+    if not check_input(cmd_dict["container_name"]):
         print "Invalid input\n"
         return res
 
@@ -38,33 +38,33 @@ def start(cmd_list, container_name):
         print "You do not have appropriate permissions to start a container"
         return res
 
-    if container_exists(container_name):
-        exit_val = command.Command(cmd_list).execute()
+    if container_exists(cmd_dict["container_name"]):
+        exit_val = command.Command(cmd_dict["cmd_list"]).execute()
         #print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
         if exit_val < 0:
             sys.stderr.write("exit value was", exit_val)
         res = True
     else:
-        print container_name, "container does not exist"
+        print cmd_dict["container_name"], "container does not exist"
                        
     return res
 
 
-def stop(cmd_list, container_name):
+def stop(cmd_dict):
     res = False
 
     if not root_access():
         return res
 
-    if not check_input(container_name):
+    if not check_input(cmd_dict["container_name"]):
         return res
 
-    if container_exists(container_name):
-        command.Command(cmd_list).execute()
+    if container_exists(cmd_dict["container_name"]):
+        command.Command(cmd_dict["cmd_list"]).execute()
        # print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
         res = True
     else:
-        print container_name, "container does not exist"
+        print cmd_dict["container_name"], "container does not exist"
 
     return res
 
@@ -89,6 +89,7 @@ def check_input(to_check):
 
 
 def list_containers():
+    # returns list of all current container names
     __get_containers()
     global __containers
     return __containers
