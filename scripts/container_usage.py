@@ -1,5 +1,3 @@
-__author__ = 'ross'
-
 import lxc_base
 import time
 

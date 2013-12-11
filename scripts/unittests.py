@@ -20,8 +20,8 @@ class TestClass(unittest.TestCase):
         '''
         container = "xcvbn"
         start_cmd = ["echo", "container started"]
-        assert not lxc_base.start(start_cmd, container), "container name may already exist, " \
-                                                         "or function is not checking for existing container"
+        assert not lxc_base.start({"cmd_list": start_cmd, "container_name": container})[0], \
+            "container name may already exist, or function is not checking for existing container"
 
     def testStartExistingContainer(self):
         '''
@@ -29,7 +29,8 @@ class TestClass(unittest.TestCase):
         '''
         container = "test"
         start_cmd = ["echo", "container started"]
-        assert lxc_base.start(start_cmd, container), "container may not exist, or start function is incorrect"
+        assert lxc_base.start({"cmd_list": start_cmd, "container_name": container})[0], \
+            "container may not exist, or start function is incorrect"
 
 
 if __name__ == "__main__":

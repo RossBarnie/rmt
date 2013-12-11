@@ -40,4 +40,5 @@ class Command:
             except Queue.Empty:
                 sys.stderr.write("Queue access attempted but was empty, returning None")
 
-        return {"is_timedout": is_alive, "returncode": self.process.returncode, "comm_retval": comm_retval}
+        return {"is_timedout": is_alive, "returncode": self.process.returncode,
+                "comm_retval": comm_retval, "pid": self.process.pid}

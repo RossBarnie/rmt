@@ -28,6 +28,10 @@ def root_access():
 
 
 def start(cmd_dict):
+    # cmd_dict has:
+    #     cmd_list: list representation of command
+    #     container_name: name of container
+
     res = False
 
     if not check_input(cmd_dict["container_name"]):
@@ -47,7 +51,7 @@ def start(cmd_dict):
     else:
         print cmd_dict["container_name"], "container does not exist"
                        
-    return res
+    return [res, exit_val]
 
 
 def stop(cmd_dict):
@@ -60,13 +64,13 @@ def stop(cmd_dict):
         return res
 
     if container_exists(cmd_dict["container_name"]):
-        command.Command(cmd_dict["cmd_list"]).execute()
+        exit_val = command.Command(cmd_dict["cmd_list"]).execute()
        # print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
         res = True
     else:
         print cmd_dict["container_name"], "container does not exist"
 
-    return res
+    return [res, exit_val]
 
 
 def pi_info():
@@ -107,6 +111,7 @@ def get_container_usage(container_name):
         print (container_usage.memory(container_name)/1024.0)/1024.0
     return
 
-@staticmethod
-def construct_start_command(container_name):
-    return command.Command(["lxc-start", "-n", container_name, "-d"])
+
+def start_container(container_name):
+    # stupid way of doing this (repetition of container name)
+    return start({"cmd_list": ["lxc-start", "-n", container_name, "-d"], "container_name": container_name})
