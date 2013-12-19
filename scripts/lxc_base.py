@@ -21,13 +21,19 @@ def __get_containers():
     else:
         print "Error retrieving container list, emptying container list"
         __containers = []
-    
+
+
+def __get_pid_from_lxc_info(container_name):
+    com = command.Command(["lxc-info", "-n", container_name]).execute(True)
+    info = com["comm_retval"]
+    return info.split("\n")[1].split()[1]
+
 
 def root_access():
     return __euid == 0
 
 
-def start(cmd_dict):
+def __start(cmd_dict):
     # cmd_dict has:
     #     cmd_list: list representation of command
     #     container_name: name of container
@@ -54,7 +60,7 @@ def start(cmd_dict):
     return [res, exit_val]
 
 
-def stop(cmd_dict):
+def __stop(cmd_dict):
     res = False
 
     if not root_access():
@@ -114,4 +120,8 @@ def get_container_usage(container_name):
 
 def start_container(container_name):
     # stupid way of doing this (repetition of container name)
-    return start({"cmd_list": ["lxc-start", "-n", container_name, "-d"], "container_name": container_name})
+    return __start({"cmd_list": ["lxc-start", "-n", container_name, "-d"], "container_name": container_name})
+
+
+def stop_container(container_name):
+    return __stop({"cmd_list": ["lxc-stop", "-n", container_name], "container_name": container_name})
