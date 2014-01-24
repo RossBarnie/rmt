@@ -48,6 +48,7 @@ def __start(cmd_dict):
         print "You do not have appropriate permissions to start a container"
         return res
 
+    exit_val = 5
     if container_exists(cmd_dict["container_name"]):
         exit_val = command.Command(cmd_dict["cmd_list"]).execute()
         #print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
@@ -69,6 +70,7 @@ def __stop(cmd_dict):
     if not check_input(cmd_dict["container_name"]):
         return res
 
+    exit_val = 5
     if container_exists(cmd_dict["container_name"]):
         exit_val = command.Command(cmd_dict["cmd_list"]).execute()
        # print command.Command(cmd_list).execute(return_output=True).get("comm_retval")
