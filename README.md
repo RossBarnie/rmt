@@ -1,4 +1,4 @@
-rvt
+rmt
 ===
 
-Ross's Virtualisation Tool: lightweight replacement for heavy linux container libraries such as LXC and libvirt designed to work on Raspberry Pi devices. Originally created for University of Glasgow's Raspberry Pi Cloud.
+Ross's Monitoring Tool: Monitoring tool for a number of containers running on a number of remote devices. Created for University of Glasgow's Raspberry Pi Cloud project.
