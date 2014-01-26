@@ -1,0 +1,24 @@
+$def with (containers)
+$var title: Pi Master
+<h1>
+    RMT - Pi Master - Active Containers
+</h1>
+
+$if not containers == []:
+    <table>
+        <tr>
+            $for key in containers[0].keys():
+                <td>$key</td>
+        </tr>
+        $for container in containers:
+            <tr>
+                $for value in container.values():
+                    <td>
+                        $if value == None:
+                            None
+                        $value
+                    </td>
+            </tr>
+    </table>
+$else:
+    No containers were found
