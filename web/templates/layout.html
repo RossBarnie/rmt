@@ -3,7 +3,9 @@ $def with (content)
 <html>
 <head>
     <title>$content.title</title>
-    <link rel="stylesheet" href="static/style.css" type="text/css" name="style"/>
+    $if content.cssfiles:
+        $for f in content.cssfiles.split()
+            <link rel="stylesheet" href="$f" type="text/css"/>
 </head>
 <body>
 $:content
