@@ -13,8 +13,7 @@ class index:
 
     def GET(self):
         client = docker.Client()
-        containers = client.containers()
-        print containers
+        containers = client.containers(all=True)
         for container in containers:
             del container['SizeRw']
             del container['SizeRootFs']
@@ -23,7 +22,6 @@ class index:
             for i in container['Names']:
                 names = names + i
             container['Names'] = names
-        print containers
         return render.index(containers)
 
 
