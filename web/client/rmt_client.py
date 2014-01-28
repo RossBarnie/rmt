@@ -1,12 +1,24 @@
 import web
 import psutil
 import json
+import docker
 
 urls = (
     '/cpu', 'cpu',
-    '/ram', 'ram'
+    '/ram', 'ram',
+    '/containers', 'containers'
 )
 app = web.application(urls, globals())
+
+
+class containers:
+
+    def GET(self):
+        client = docker.Client()
+        containers = client.containers(all=True)
+        dump = json.dumps(containers)
+        web.header('Content-Type', 'application/json')
+        return dump
 
 
 class cpu:
@@ -25,7 +37,8 @@ class ram:
         ram_used = psutil.virtual_memory().used
         dict = {'ram_total': ram_total, 'ram_used': ram_used}
         web.header('Content-Type', 'application/json')
-        return json.dumps(dict)
+        dump = json.dumps(dict)
+        return dump
 
 if __name__ == "__main__":
     app.run()
