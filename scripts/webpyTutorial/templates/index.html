@@ -1,0 +1,18 @@
+$def with (todos)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tutorial</title>
+</head>
+<body>
+
+<ul>
+    $for todo in todos:
+        <li id="$todo.id">$todo.id, $todo.title</li>
+</ul>
+
+<form method="post" action="add">
+    <p><input type="text" name="title"/> <input type="submit" value="Add" /> </p>
+</form>
+</body>
+</html>

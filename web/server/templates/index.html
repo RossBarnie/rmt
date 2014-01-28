@@ -1,7 +1,20 @@
+$def with (hosts)
 $var title: Pi Master
 $var cssfiles: static/style.css
 <h1>
     RMT - Pi Master - Index
 </h1>
 
-Index
+$if hosts:
+    <table>
+        <tr><td>ID</td><td>Host</td></tr>
+        $for host in hosts:
+            <tr>
+            <td>$host.id</td>
+            <td>$host.address</td>
+            </tr>
+    </table>
+
+<form method="post" action="add">
+    <p><input type="text" name="address"/> <input type="submit" value="Add" /> </p>
+</form>

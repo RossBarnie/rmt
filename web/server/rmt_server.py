@@ -5,15 +5,32 @@ render = web.template.render('templates/', base='layout')
 
 urls = (
     '/', 'index',
-    '/host', 'host'
+    '/host', 'host',
+    '/add', 'add'
 )
 app = web.application(urls, globals())
+
+db = web.database(dbn='mysql', user='rmt-user', db='rmt')
 
 
 class index:
 
     def GET(self):
-        return render.index()
+        hosts = db.select('hosts')
+        return render.index(hosts)
+
+
+class add:
+
+    def try_host(self, hostname):
+        return True
+
+    def POST(self):
+        form = web.input()
+        if self.try_host(form.address):
+            db.insert('hosts', address=form.address)
+        raise web.redirect('/')
+        #raise web.seeother('/')
 
 
 class host:
