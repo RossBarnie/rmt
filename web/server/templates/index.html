@@ -11,10 +11,11 @@ $if hosts:
         $for host in hosts:
             <tr>
             <td>$host.id</td>
-            <td>$host.address</td>
+            $link = "/host/" + $host.id
+            <td><a href=$link>$host.address</a></td>
             </tr>
     </table>
 
 <form method="post" action="add">
-    <p><input type="text" name="address"/> <input type="submit" value="Add" /> </p>
+    <p><input type="text" name="address"/> <input type="submit" value="Add" /></p>
 </form>
