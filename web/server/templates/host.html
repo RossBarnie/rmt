@@ -6,11 +6,11 @@ $var cssfiles: static/style.css
 </h1>
 
 $if cpu_usage:
-    CPU Usage: $cpu_usage %
+    CPU Usage(%): $cpu_usage
 <br>
 $if ram_usage:
-    RAM Usage: $ram_usage['used'] / $ram_usage['total']
-
+    RAM Usage (KiB): $ram_usage['used'] / $ram_usage['total']
+<p>
 $if containers:
     <table>
         <tr>
@@ -29,3 +29,4 @@ $if containers:
     </table>
 $else:
     No containers were found
+</p>

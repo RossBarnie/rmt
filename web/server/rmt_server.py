@@ -30,7 +30,6 @@ class add:
         if self.try_host(form.address):
             db.insert('hosts', address=form.address)
         raise web.redirect('/')
-        #raise web.seeother('/')
 
 
 class host:
