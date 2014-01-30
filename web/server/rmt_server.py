@@ -1,5 +1,6 @@
 import web
 import requests
+import dblayer
 
 render = web.template.render('templates/', base='layout')
 
@@ -10,25 +11,24 @@ urls = (
 )
 app = web.application(urls, globals())
 
-db = web.database(dbn='mysql', user='rmt-user', db='rmt')
-
 
 class index:
 
     def GET(self):
-        hosts = db.select('hosts')
+        hosts = dblayer.get_hosts()
         return render.index(hosts)
 
 
 class add:
 
     def try_host(self, hostname):
+        # placeholder for some kind of ping to make sure the host exists/can connect
         return True
 
     def POST(self):
         form = web.input()
         if self.try_host(form.address):
-            db.insert('hosts', address=form.address)
+            dblayer.insert_new_address(form.address)
         raise web.redirect('/')
 
 
@@ -36,7 +36,7 @@ class host:
 
     def GET(self, host_id):
 
-        host_addr = db.select('hosts.address', where='hosts.id = ' + host_id)
+        host_addr = dblayer.get_host_address_from_id(host_id)
 
         r = None
         try:
