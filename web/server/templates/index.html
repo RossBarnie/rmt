@@ -11,7 +11,7 @@ $if hosts:
         $for host in hosts:
             <tr>
             <td>$host.id</td>
-            $link = "/host/" + $host.id
+            $ link = "/host/%d" % host.id
             <td><a href=$link>$host.address</a></td>
             </tr>
     </table>
