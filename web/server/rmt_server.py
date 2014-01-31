@@ -36,12 +36,19 @@ class host:
 
     def GET(self, host_id):
 
-        host_addr = dblayer.get_host_address_from_id(host_id)
+        host_table = dblayer.get_host_address_from_id(host_id)
 
+        host_addr = ""
+        count = 0
+        for a in host_table:
+            count += 1
+            host_addr = a['address']
+
+        if count > 1:
+            print "[ERROR] more than one host with id %d" % host_id
         r = None
         try:
-            print host_id
-            r = requests.get(host_addr + '/containers')
+            r = requests.get('%s/containers' % host_addr)
         except requests.RequestException as e:
             print "[ERROR] Container request to", host_addr, "failed:", e
             r = None
@@ -58,9 +65,9 @@ class host:
                     names = names + i
                 container['Names'] = names
         try:
-            cpu_response = requests.get(host_addr + '/cpu')
+            cpu_response = requests.get('%s/cpu' % host_addr)
             cpu = cpu_response.json()
-            ram_response = requests.get(host_addr + '/ram')
+            ram_response = requests.get('%s/ram' % host_addr)
             ram = ram_response.json()
         except requests.RequestException as e:
             print "[ERROR] CPU or RAM request error:", e
