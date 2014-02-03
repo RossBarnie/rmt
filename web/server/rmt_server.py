@@ -1,8 +1,10 @@
 import web
 import requests
 import dblayer
+import os
 
-render = web.template.render('templates/', base='layout')
+template_root = os.path.join(os.path.dirname(__file__))
+render = web.template.render(template_root + '/templates/', base='layout')
 
 urls = (
     '/', 'index',
@@ -15,14 +17,15 @@ app = web.application(urls, globals())
 class index:
 
     def GET(self):
-        hosts = dblayer.get_hosts()
-        return render.index(hosts)
+		hosts = dblayer.get_hosts()
+		return render.index(hosts)
 
 
 class add:
 
     def try_host(self, hostname):
-        # placeholder for some kind of ping to make sure the host exists/can connect
+        # placeholder for some kind of ping to make sure the host 
+        # exists/can connect
         return True
 
     def POST(self):
@@ -50,7 +53,8 @@ class host:
         try:
             r = requests.get('%s/containers' % host_addr)
         except requests.RequestException as e:
-            print "[ERROR] Container request to", host_addr, "failed:", e
+            print "[ERROR] Container request to", \
+			host_addr, "failed:", e
             r = None
         containers = None
         if r:
