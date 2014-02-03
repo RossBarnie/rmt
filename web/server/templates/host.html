@@ -1,31 +1,44 @@
 $def with (containers, cpu_usage, ram_usage)
 $var title: Pi Master - Host
-$var cssfiles: static/style.css
-<h1>
-    RMT - Pi Master - Host
-</h1>
+$var cssfiles: /static/bootstrap/css/bootstrap.css
 
-$if cpu_usage:
-    CPU Usage: $cpu_usage %
-<br>
-$if ram_usage:
-    RAM Usage: $ram_usage['used'] / $ram_usage['total']
 
-$if containers:
-    <table>
-        <tr>
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>
+                Host
+            </h1>
+        </div>
+        $if cpu_usage:
+            CPU Usage(%): $cpu_usage
+        $else:
+            Could not find CPU information
+        <br>
+        $if ram_usage:
+            RAM Usage (KiB): $ram_usage['used'] / $ram_usage['total']
+        $else:
+            Could not find RAM information
+        <p>
+        $if containers:
+            <table class="table">
+            <tr>
             $for key in containers[0].keys():
                 <td>$key</td>
-        </tr>
-        $for container in containers:
-            <tr>
+            </tr>
+            $for container in containers:
+                <tr>
                 $for value in container.values():
                     <td>
                         $if value == None:
                             None
                         $value
                     </td>
-            </tr>
-    </table>
-$else:
-    No containers were found
+                </tr>
+            </table>
+        $else:
+            No containers were found
+        </p>
+    </div>
+</div>
+
