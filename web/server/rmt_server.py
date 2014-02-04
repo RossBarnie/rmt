@@ -68,25 +68,39 @@ class host:
                 for i in container['Names']:
                     names = names + i
                 container['Names'] = names
+        cpu_response = None
+        ram_response = None
+        temp_response = None
         try:
             cpu_response = requests.get('%s/cpu' % host_addr)
             cpu = cpu_response.json()
             ram_response = requests.get('%s/ram' % host_addr)
             ram = ram_response.json()
+            temp_response = requests.get('%s/temperature' % host_addr)
+            temp = temp_response.json()
         except requests.RequestException as e:
-            print "[ERROR] CPU or RAM request error:", e
+            print "[ERROR] CPU/RAM/temperature request error:", e
+            print "CPU: ", cpu_response
+            print "RAM: ", ram_response
+            print "Temperature: ", temp_response
             cpu = None
             ram = None
+            temp = None
+        except ValueError as v:
+            print "[ERROR] Problem decoding CPU/RAM/Temperature:", v
+            temp = None
         cpu_usage = []
         ram_usage = {}
         if cpu:
             cpu_usage = cpu[0] + cpu[1]
         if ram:
             ram_usage = {}
-            ram_usage['total'] = ram['ram_total'] / 1024 / 1024
-            ram_usage['used'] = ram['ram_used'] / 1024 / 1024
+            ram_usage['total'] = int(round(ram['ram_total'] / 1024.0 / 1024.0))
+            ram_usage['used'] = int(round(ram['ram_used'] / 1024.0 / 1024.0))
+        if temp:
+            temp = round(temp/1000.0, 2)
 
-        return render.host(containers, cpu_usage, ram_usage)
+        return render.host(host_addr, containers, cpu_usage, ram_usage, temp)
 
 
 if __name__ == "__main__":

@@ -2,32 +2,33 @@ import web
 import psutil
 import json
 import docker
+import command
 
 urls = (
     '/cpu', 'cpu',
     '/ram', 'ram',
-    '/containers', 'containers'
+    '/containers', 'containers',
+    '/temperature', 'temp'
 )
 app = web.application(urls, globals())
 
+def prepare_message(message):
+	web.header('Content-Type', 'application/json')
+	return json.dumps(message)
 
 class containers:
 
     def GET(self):
         client = docker.Client()
         containers = client.containers(all=True)
-        dump = json.dumps(containers)
-        web.header('Content-Type', 'application/json')
-        return dump
+        return prepare_message(containers)
 
 
 class cpu:
 
     def GET(self):
         utilisation = psutil.cpu_times_percent(interval=1)
-        dump = json.dumps(utilisation)
-        web.header('Content-Type', 'application/json')
-        return dump
+        return prepare_message(utilisation)
 
 
 class ram:
@@ -35,10 +36,23 @@ class ram:
     def GET(self):
         ram_total = psutil.virtual_memory().total
         ram_used = psutil.virtual_memory().used
-        dict = {'ram_total': ram_total, 'ram_used': ram_used}
-        web.header('Content-Type', 'application/json')
-        dump = json.dumps(dict)
-        return dump
+        ram_dict = {'ram_total': ram_total, 'ram_used': ram_used}
+        return prepare_message(ram_dict)
+    
+        
+class temp:
+	
+	def GET(self):
+		com = command.Command(["cat", "/sys/class/thermal/thermal_zone0/temp"])
+		temp = None
+		try:
+			temp = com.execute(return_output=True).get("comm_retval")
+			temp = int(temp)
+		except Exception, e:
+			print "[ERROR] temperature command error: ", e
+			return
+		return prepare_message(temp)
+		
 
 if __name__ == "__main__":
     app.run()

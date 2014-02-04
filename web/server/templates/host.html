@@ -1,44 +1,49 @@
-$def with (containers, cpu_usage, ram_usage)
+$def with (host_addr, containers, cpu_usage, ram_usage, temp)
 $var title: Pi Master - Host
 $var cssfiles: /static/bootstrap/css/bootstrap.css
 
 
 <div class="container">
-    <div class="row">
-        <div class="page-header">
-            <h1>
-                Host
-            </h1>
-        </div>
-        $if cpu_usage:
-            CPU Usage(%): $cpu_usage
-        $else:
-            Could not find CPU information
-        <br>
-        $if ram_usage:
-            RAM Usage (KiB): $ram_usage['used'] / $ram_usage['total']
-        $else:
-            Could not find RAM information
-        <p>
-        $if containers:
-            <table class="table">
-            <tr>
-            $for key in containers[0].keys():
-                <td>$key</td>
-            </tr>
-            $for container in containers:
-                <tr>
-                $for value in container.values():
-                    <td>
-                        $if value == None:
-                            None
-                        $value
-                    </td>
-                </tr>
-            </table>
-        $else:
-            No containers were found
-        </p>
-    </div>
+	<div class="row">
+		<div class="page-header">
+			<h1>
+				Host <small>$host_addr</small>
+			</h1>
+		</div>
+		$if cpu_usage:
+			CPU Usage(%): $cpu_usage
+		$else:
+			Could not find CPU information
+		<br>
+		$if ram_usage:
+			RAM Usage (KiB): $ram_usage['used'] / $ram_usage['total']
+		$else:
+			Could not find RAM information
+		<br>
+		$if temp:
+			Temperature (°C): $temp
+		$else:
+			Temperature information unavailable
+		<p>
+		$if containers:
+			<table class="table">
+			<tr>
+			$for key in containers[0].keys():
+				<td>$key</td>
+			</tr>
+			$for container in containers:
+				<tr>
+				$for value in container.values():
+					<td>
+						$if value == None:
+							None
+						$value
+					</td>
+				</tr>
+			</table>
+		$else:
+			No containers were found
+		</p>
+	</div>
 </div>
 
