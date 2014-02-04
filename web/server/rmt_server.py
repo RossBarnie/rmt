@@ -71,6 +71,9 @@ class host:
         cpu_response = None
         ram_response = None
         temp_response = None
+        cpu = None
+        ram = None
+        temp = None
         try:
             cpu_response = requests.get('%s/cpu' % host_addr)
             cpu = cpu_response.json()

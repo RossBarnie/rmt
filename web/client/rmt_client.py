@@ -19,8 +19,13 @@ def prepare_message(message):
 class containers:
 
     def GET(self):
-        client = docker.Client()
-        containers = client.containers(all=True)
+		containers = None
+		try:
+			client = docker.Client()
+			containers = client.containers(all=True)
+		except Exception as e:
+			print "[ERROR] Containers unavailable: ", e
+			containers = None			
         return prepare_message(containers)
 
 
