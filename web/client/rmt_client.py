@@ -13,19 +13,19 @@ urls = (
 app = web.application(urls, globals())
 
 def prepare_message(message):
-	web.header('Content-Type', 'application/json')
-	return json.dumps(message)
+    web.header('Content-Type', 'application/json')
+    return json.dumps(message)
 
 class containers:
 
     def GET(self):
-		containers = None
-		try:
-			client = docker.Client()
-			containers = client.containers(all=True)
-		except Exception as e:
-			print "[ERROR] Containers unavailable: ", e
-			containers = None			
+        containers = None
+        try:
+            client = docker.Client()
+            containers = client.containers(all=True)
+        except Exception as e:
+            print "[ERROR] Containers unavailable: ", e
+            containers = None           
         return prepare_message(containers)
 
 
@@ -46,18 +46,18 @@ class ram:
     
         
 class temp:
-	
-	def GET(self):
-		com = command.Command(["cat", "/sys/class/thermal/thermal_zone0/temp"])
-		temp = None
-		try:
-			temp = com.execute(return_output=True).get("comm_retval")
-			temp = int(temp)
-		except Exception, e:
-			print "[ERROR] temperature command error: ", e
-			return
-		return prepare_message(temp)
-		
+    
+    def GET(self):
+        com = command.Command(["cat", "/sys/class/thermal/thermal_zone0/temp"])
+        temp = None
+        try:
+            temp = com.execute(return_output=True).get("comm_retval")
+            temp = int(temp)
+        except Exception, e:
+            print "[ERROR] temperature command error: ", e
+            return None
+        return prepare_message(temp)
+        
 
 if __name__ == "__main__":
     app.run()
