@@ -18,7 +18,11 @@ app = web.application(urls, globals())
 class index:
 
     def GET(self):
-        hosts = dblayer.get_hosts()
+        yellow_hosts = dblayer.get_hosts_by_stack("yellow")
+        red_hosts = dblayer.get_hosts_by_stack("red")
+        green_hosts = dblayer.get_hosts_by_stack("green")
+        grey_hosts = dblayer.get_hosts_by_stack("grey")
+        hosts = {"yellow": yellow_hosts, "red": red_hosts, "green": green_hosts, "grey": grey_hosts}
         stack = form.Form(
             form.Textbox('address',
                          form.notnull,

@@ -10,6 +10,10 @@ def get_hosts():
     return db.select('hosts')
 
 
+def get_hosts_by_stack(stack):
+    return db.select('hosts', where="hosts.stack = '%s'" % stack)
+
+
 def get_host_id_from_address(address):
     return db.select('hosts', where="hosts.address = " + address)
 

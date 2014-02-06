@@ -4,42 +4,46 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 
 <div class="container">
     <div class="row">
-        <div class="page-header">
-            <h1>
-                Overview
-            </h1>
+
+        <div class="col-md-3 col-lg-3 col-sm-3">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    Red Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['red']
+                    $ link = "/host/%d" % host.id
+                    <a class=list-group-item href="$link">$host.address</a>
+                </div>
+            </div>
         </div>
-        $if hosts:
-        <table class="table">
-            <tr><th>Host</th><th>Stack</th></tr>
-            $for host in hosts:
-            <tr>
-                $ link = "/host/%d" % host.id
-                <td><a href=$link>$host.address</a></td>
-                <td>$host.stack</td>
-            </tr>
-        </table>
-    </div> <!-- /row -->
 
+        <div class="col-md-3 col-lg-3 col-sm-3">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    Yellow Stack
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3 col-lg-3 col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Grey Stack
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-lg-3 col-sm-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    Green Stack
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
-
-        <!--<form class="well" method="post" action="add">
-            <input type="text" class="form-control" placeholder="0.0.0.0:8080..." name="address">
-            <label class="radio-inline">
-                <input type="radio" checked="true" name="stack-red">Red
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="stack-yellow">Yellow
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="stack-grey">Grey
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="stack-green">Green
-            </label>
-            <button value="Add" type="submit" class="btn btn-default">Submit</button>
-        </form>
-        -->
         <div class="col-lg-6 well">
             <form role="form" class="form-inline" name="stack-form" method="post" action="add">
                 $if not form.valid: <p class="error">Invalid entry</p>
