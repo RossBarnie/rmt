@@ -7,9 +7,7 @@ UDP_PORT = 43278
 CHECK_PERIOD = 20
 CHECK_TIMEOUT = 15
 
-import socket
-import threading
-import time
+import socket, threading, time, dblayer
 
 
 class Heartbeats(dict):
@@ -49,8 +47,9 @@ class Receiver(threading.Thread):
         while self.goOnEvent.isSet():
             try:
                 data, addr = self.recSocket.recvfrom(5)
-                if data == 'rmt-heartbeat':
+                if data == 'PyHB':
                     self.heartbeats[addr[0]] = time.time()
+                    dblayer.update_silent(addr[0], time.time())
             except socket.timeout:
                 pass
 
@@ -59,7 +58,7 @@ def main():
     receiverEvent = threading.Event()
     receiverEvent.set()
     heartbeats = Heartbeats()
-    receiver = Receiver(goOnEvent=receiverEvent, heartbeats=heartbeats)
+    receiver = Receiver(goOnEvent = receiverEvent, heartbeats = heartbeats)
     receiver.start()
     print ('Threaded heartbeat server listening on port %d\n'
         'press Ctrl-C to stop\n') % UDP_PORT

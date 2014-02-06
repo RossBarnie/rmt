@@ -17,8 +17,8 @@ app = web.application(urls, globals())
 class index:
 
     def GET(self):
-		hosts = dblayer.get_hosts()
-		return render.index(hosts)
+        hosts = dblayer.get_hosts()
+        return render.index(hosts)
 
 
 class add:
@@ -54,7 +54,7 @@ class host:
             r = requests.get('%s/containers' % host_addr)
         except requests.RequestException as e:
             print "[ERROR] Container request to", \
-			host_addr, "failed:", e
+            host_addr, "failed:", e
             r = None
         containers = None
         if r:
