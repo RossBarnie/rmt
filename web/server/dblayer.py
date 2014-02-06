@@ -18,8 +18,8 @@ def get_host_address_from_id(host_id):
     return db.select('hosts', where="hosts.id = " + host_id)
 
 
-def insert_new_address(address):
-    db.insert('hosts', address=address)
+def insert_new_address(address, stack):
+    db.insert('hosts', address=address, stack=stack)
 
 
 def update_silent(address, time):

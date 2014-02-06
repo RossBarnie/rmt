@@ -1,4 +1,4 @@
-$def with (hosts)
+$def with (hosts, form)
 $var title: Pi Master
 $var cssfiles: /static/bootstrap/css/bootstrap.css
 
@@ -11,23 +11,48 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
         </div>
         $if hosts:
         <table class="table">
-            <tr><td>ID</td><td>Host</td></tr>
+            <tr><th>Host</th><th>Stack</th></tr>
             $for host in hosts:
             <tr>
-                <td>$host.id</td>
                 $ link = "/host/%d" % host.id
                 <td><a href=$link>$host.address</a></td>
+                <td>$host.stack</td>
             </tr>
         </table>
+    </div> <!-- /row -->
 
-        <div class="input-group">
-            <form method="post" action="add">
-            <input type="text" class="form-control" name="address">
-            <span class="input-group-btn">
-                <button value="Add" class="btn btn-default" type="submit">Add</button>
-            </span>
+    <div class="row">
+
+        <!--<form class="well" method="post" action="add">
+            <input type="text" class="form-control" placeholder="0.0.0.0:8080..." name="address">
+            <label class="radio-inline">
+                <input type="radio" checked="true" name="stack-red">Red
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="stack-yellow">Yellow
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="stack-grey">Grey
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="stack-green">Green
+            </label>
+            <button value="Add" type="submit" class="btn btn-default">Submit</button>
+        </form>
+        -->
+        <div class="col-lg-6 well">
+            <form role="form" class="form-inline" name="stack-form" method="post" action="add">
+                $if not form.valid: <p class="error">Invalid entry</p>
+                <div class="form-group">
+                    $:form.address.render()
+                </div>
+                <div class="form-group">
+                    $:form.stack.render()
+                </div>
+                <button value="Add" type="submit" class="form-control btn btn-info">Submit</button>
+
             </form>
-        </div><!-- /input-group -->
+        </div>
     </div>
 </div>
 

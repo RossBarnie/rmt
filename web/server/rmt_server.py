@@ -1,4 +1,5 @@
 import web
+from web import form
 import requests
 import dblayer
 import os
@@ -18,7 +19,25 @@ class index:
 
     def GET(self):
         hosts = dblayer.get_hosts()
-        return render.index(hosts)
+        stack = form.Form(
+            form.Textbox('address',
+                         form.notnull,
+                         id="address",
+                         class_="form-control"
+                         ),
+            form.Dropdown('stack',
+                          [
+                              ('red', 'Red'),
+                              ('yellow', 'Yellow'),
+                              ('green', 'Green'),
+                              ('grey', 'Grey')
+                          ],
+                          id="stack",
+                          class_="form-control btn btn-default dropdown-toggle"
+                          )
+        )
+        f = stack()
+        return render.index(hosts, f)
 
 
 class add:
@@ -31,7 +50,7 @@ class add:
     def POST(self):
         form = web.input()
         if self.try_host(form.address):
-            dblayer.insert_new_address(form.address)
+            dblayer.insert_new_address(form.address, form.stack)
         raise web.redirect('/')
 
 
