@@ -41,7 +41,8 @@ class Receiver(threading.Thread):
         self.heartbeats = heartbeats
         self.recSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.recSocket.settimeout(CHECK_TIMEOUT)
-        self.recSocket.bind((socket.gethostbyname('localhost'), UDP_PORT))
+        self.recSocket.bind(('192.168.0.3', UDP_PORT))
+
 
     def run(self):
         while self.goOnEvent.isSet():
@@ -49,7 +50,7 @@ class Receiver(threading.Thread):
                 data, addr = self.recSocket.recvfrom(5)
                 if data == 'PyHB':
                     self.heartbeats[addr[0]] = time.time()
-                    dblayer.update_silent(addr[0], time.time())
+                    dblayer.update_heartbeat(addr[0], time.time())
             except socket.timeout:
                 pass
 

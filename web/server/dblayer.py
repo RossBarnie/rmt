@@ -26,13 +26,13 @@ def insert_new_address(address, stack):
     db.insert('hosts', address=address, stack=stack)
 
 
-def update_silent(address, time):
-    entry = db.select('silent', where="silent.hostname = '%s'" % address)
+def update_heartbeat(address, time):
+    entry = db.select('heartbeat', where="heartbeat.hostname = '%s'" % address)
     if entry:
-        db.update("silent", where="silent.hostname = $address", last_contact=time, vars=locals())
+        db.update("heartbeat", where="heartbeat.hostname = $address", last_contact=time, vars=locals())
     else:
-        insert_new_silent(address, time)
+        insert_new_heartbeat(address, time)
 
 
-def insert_new_silent(name, time):
-    db.insert('silent', hostname=name, last_contact=time)
+def insert_new_heartbeat(name, time):
+    db.insert('heartbeat', hostname=name, last_contact=time)

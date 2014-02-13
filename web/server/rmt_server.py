@@ -41,6 +41,7 @@ class index:
                           )
         )
         f = stack()
+        #TODO: find some way to pass the heartbeat to the template
         return render.index(hosts, f)
 
 

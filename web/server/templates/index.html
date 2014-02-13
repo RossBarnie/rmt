@@ -12,6 +12,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
                 </div>
                 <div class="list-group">
                     $for host in hosts['red']
+                    <!-- TODO: add handler for heartbeat status -->
                     $ link = "/host/%d" % host.id
                     <a class=list-group-item href="$link">$host.address</a>
                 </div>
@@ -23,6 +24,11 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
                 <div class="panel-heading">
                     Yellow Stack
                 </div>
+                <div class="list-group">
+                    $for host in hosts['yellow']
+                    $ link = "/host/%d" % host.id
+                    <a class=list-group-item href="$link">$host.address</a>
+                </div>
             </div>
 
         </div>
@@ -32,6 +38,11 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
                 <div class="panel-heading">
                     Grey Stack
                 </div>
+                <div class="list-group">
+                    $for host in hosts['grey']
+                    $ link = "/host/%d" % host.id
+                    <a class=list-group-item href="$link">$host.address</a>
+                </div>
             </div>
         </div>
 
@@ -39,6 +50,11 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
             <div class="panel panel-success">
                 <div class="panel-heading">
                     Green Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['green']
+                    $ link = "/host/%d" % host.id
+                    <a class=list-group-item href="$link">$host.address</a>
                 </div>
             </div>
         </div>
