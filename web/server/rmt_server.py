@@ -3,6 +3,7 @@ from web import form
 import requests
 import dblayer
 import os
+import urlparse
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -55,7 +56,10 @@ class add:
     def POST(self):
         form = web.input()
         if self.try_host(form.address):
-            dblayer.insert_new_address(form.address, form.stack)
+            parser = urlparse.urlparse(form.address)
+            port = parser.port
+            address = parser.hostname
+            dblayer.insert_new_address(address, port, form.stack)
         raise web.redirect('/')
 
 
@@ -66,16 +70,20 @@ class host:
         host_table = dblayer.get_host_address_from_id(host_id)
 
         host_addr = ""
+        host_port = -1
         count = 0
         for a in host_table:
             count += 1
             host_addr = a['address']
+            host_port = a['port']
 
         if count > 1:
             print "[ERROR] more than one host with id %d" % host_id
         r = None
+        url = ""
         try:
-            r = requests.get('%s/containers' % host_addr)
+            url = "http://{}:{}".format(host_addr, host_port)
+            r = requests.get(url + "/containers")
         except requests.RequestException as e:
             print "[ERROR] Container request to", \
             host_addr, "failed:", e
@@ -99,11 +107,11 @@ class host:
         ram = None
         temp = None
         try:
-            cpu_response = requests.get('%s/cpu' % host_addr)
+            cpu_response = requests.get('%s/cpu' % url)
             cpu = cpu_response.json()
-            ram_response = requests.get('%s/ram' % host_addr)
+            ram_response = requests.get('%s/ram' % url)
             ram = ram_response.json()
-            temp_response = requests.get('%s/temperature' % host_addr)
+            temp_response = requests.get('%s/temperature' % url)
             temp = temp_response.json()
         except requests.RequestException as e:
             print "[ERROR] CPU/RAM/temperature request error:", e

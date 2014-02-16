@@ -22,17 +22,17 @@ def get_host_address_from_id(host_id):
     return db.select('hosts', where="hosts.id = " + host_id)
 
 
-def insert_new_address(address, stack):
-    db.insert('hosts', address=address, stack=stack)
+def insert_new_address(address, port, stack):
+    db.insert('hosts', address=address, port=port, stack=stack)
 
 
 def update_heartbeat(address, time):
-    entry = db.select('heartbeat', where="heartbeat.hostname = '%s'" % address)
+    entry = db.select('hosts', where="hosts.address = '%s'" % address)
     if entry:
-        db.update("heartbeat", where="heartbeat.hostname = $address", last_contact=time, vars=locals())
+        db.update("hosts", where="hosts.address = $address", last_contacted=time, vars=locals())
     else:
         insert_new_heartbeat(address, time)
 
 
 def insert_new_heartbeat(name, time):
-    db.insert('heartbeat', hostname=name, last_contact=time)
+    db.insert('hosts', address=name, last_contacted=time)

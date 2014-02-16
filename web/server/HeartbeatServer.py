@@ -7,7 +7,7 @@ UDP_PORT = 43278
 CHECK_PERIOD = 20
 CHECK_TIMEOUT = 15
 
-import socket, threading, time, dblayer
+import socket, threading, time, dblayer, datetime
 
 
 class Heartbeats(dict):
@@ -49,8 +49,9 @@ class Receiver(threading.Thread):
             try:
                 data, addr = self.recSocket.recvfrom(5)
                 if data == 'PyHB':
-                    self.heartbeats[addr[0]] = time.time()
-                    dblayer.update_heartbeat(addr[0], time.time())
+                    now = datetime.datetime.utcnow()
+                    self.heartbeats[addr[0]] = now.isoformat(" ")
+                    dblayer.update_heartbeat(addr[0], now)
             except socket.timeout:
                 pass
 
