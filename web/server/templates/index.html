@@ -1,64 +1,8 @@
 $def with (hosts, form)
 $var title: Pi Master
 $var cssfiles: /static/bootstrap/css/bootstrap.css
-
+<meta http-equiv="refresh" content="10">
 <div class="container">
-    <div class="row">
-
-        <div class="col-md-3 col-lg-3 col-sm-3">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    Red Stack
-                </div>
-                <div class="list-group">
-                    $for host in hosts['red']
-                    <!-- TODO: add handler for heartbeat status -->
-                    $ link = "/host/%d" % host.id
-                    <a class=list-group-item href="$link">$host.address</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-lg-3 col-sm-3">
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    Yellow Stack
-                </div>
-                <div class="list-group">
-                    $for host in hosts['yellow']
-                    $ link = "/host/%d" % host.id
-                    <a class=list-group-item href="$link">$host.address</a>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-3 col-lg-3 col-sm-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Grey Stack
-                </div>
-                <div class="list-group">
-                    $for host in hosts['grey']
-                    $ link = "/host/%d" % host.id
-                    <a class=list-group-item href="$link">$host.address</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-lg-3 col-sm-3">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    Green Stack
-                </div>
-                <div class="list-group">
-                    $for host in hosts['green']
-                    $ link = "/host/%d" % host.id
-                    <a class=list-group-item href="$link">$host.address</a>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-lg-6 well">
             <form role="form" class="form-inline" name="stack-form" method="post" action="add">
@@ -74,6 +18,72 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
             </form>
         </div>
     </div>
+</div>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    Red Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['red']
+
+                        $ link = "/host/%s" % host.id
+                        $ state = host.hbstate
+                        <a class="list-group-item list-group-item-$state" href="$link">$host['address']</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    Yellow Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['yellow']
+
+                        $ link = "/host/%s" % host.id
+                        $ state = host.hbstate
+                        <a class="list-group-item list-group-item-$state" href="$link">$host['address']</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Grey Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['grey']
+
+                        $ link = "/host/%s" % host.id
+                        $ state = host.hbstate
+                        <a class="list-group-item list-group-item-$state" href="$link">$host['address']</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 col-sm-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    Green Stack
+                </div>
+                <div class="list-group">
+                    $for host in hosts['green']
+                        <!-- TODO: add handler for heartbeat status -->
+                        $ link = "/host/%s" % host.id
+                        $ state = host.hbstate
+                        <a class="list-group-item list-group-item-$state" href="$link">$host['address']</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 

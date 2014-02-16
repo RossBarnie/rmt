@@ -4,6 +4,7 @@ import requests
 import dblayer
 import os
 import urlparse
+from datetime import datetime
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -15,34 +16,60 @@ urls = (
 )
 app = web.application(urls, globals())
 
+HB_STATE_FINE = "active"
+HB_STATE_WARNING = "warning"
+HB_STATE_DANGER = "danger"
+HB_DANGER_TIME = 60
+HB_WARNING_TIME = 30
+
 
 class index:
+
+    def get_hb_state(self, hosts):
+        new_hosts = []
+        for host in hosts:
+            host.hbstate = HB_STATE_FINE
+            delay = datetime.now() - host['last_contacted']
+            print delay.seconds
+            if delay.seconds >= HB_WARNING_TIME:
+                host.hbstate = HB_STATE_WARNING
+            if delay.seconds >= HB_DANGER_TIME:
+                host.hbstate = HB_STATE_DANGER
+            new_hosts += [host]
+        return new_hosts
 
     def GET(self):
         yellow_hosts = dblayer.get_hosts_by_stack("yellow")
         red_hosts = dblayer.get_hosts_by_stack("red")
         green_hosts = dblayer.get_hosts_by_stack("green")
         grey_hosts = dblayer.get_hosts_by_stack("grey")
+        yellow_hosts = self.get_hb_state(yellow_hosts)
+        red_hosts = self.get_hb_state(red_hosts)
+        green_hosts = self.get_hb_state(green_hosts)
+        grey_hosts = self.get_hb_state(grey_hosts)
         hosts = {"yellow": yellow_hosts, "red": red_hosts, "green": green_hosts, "grey": grey_hosts}
         stack = form.Form(
-            form.Textbox('address',
-                         form.notnull,
-                         id="address",
-                         class_="form-control"
-                         ),
-            form.Dropdown('stack',
-                          [
-                              ('red', 'Red'),
-                              ('yellow', 'Yellow'),
-                              ('green', 'Green'),
-                              ('grey', 'Grey')
-                          ],
-                          id="stack",
-                          class_="form-control btn btn-default dropdown-toggle"
-                          )
+            form.Textbox(
+                'address',
+                # form.notnull doesn't appear to work
+                # TODO: fix form insertion working when it shouldn't
+                form.notnull,
+                id="address",
+                class_="form-control",
+            ),
+            form.Dropdown(
+                'stack',
+                [
+                    ('red', 'Red'),
+                    ('yellow', 'Yellow'),
+                    ('green', 'Green'),
+                    ('grey', 'Grey')
+                ],
+                id="stack",
+                class_="form-control btn btn-default dropdown-toggle"
+            )
         )
         f = stack()
-        #TODO: find some way to pass the heartbeat to the template
         return render.index(hosts, f)
 
 
