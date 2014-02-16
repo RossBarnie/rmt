@@ -6,7 +6,7 @@
 UDP_PORT = 43278
 CHECK_PERIOD = 20
 CHECK_TIMEOUT = 15
-SERVER_IP = 0.0.0.0
+SERVER_IP = "0.0.0.0"
 
 import socket, threading, time, dblayer, datetime
 from ConfigParser import SafeConfigParser
@@ -19,9 +19,9 @@ def get_config():
     global SERVER_IP
     parser = SafeConfigParser()
     parser.read("server.cfg")
-    UDP_PORT = parser.get("heartbeat", "udp_port")
-    CHECK_PERIOD = parser.get("heartbeat", "check_period")
-    CHECK_TIMEOUT = parser.get("heartbeat", "check_timeout")
+    UDP_PORT = parser.getint("heartbeat", "udp_port")
+    CHECK_PERIOD = parser.getint("heartbeat", "check_period")
+    CHECK_TIMEOUT = parser.getint("heartbeat", "check_timeout")
     SERVER_IP = parser.get("heartbeat", "server_ip")
 
 
