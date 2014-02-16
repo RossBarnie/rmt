@@ -5,6 +5,7 @@ import dblayer
 import os
 import urlparse
 from datetime import datetime
+from ConfigParser import SafeConfigParser
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -21,6 +22,16 @@ HB_STATE_WARNING = "warning"
 HB_STATE_DANGER = "danger"
 HB_DANGER_TIME = 60
 HB_WARNING_TIME = 30
+SITE_REFRESH_TIME = 10
+
+
+def get_config():
+    global HB_WARNING_TIME
+    global HB_DANGER_TIME
+    parser = SafeConfigParser()
+    parser.read("server.cfg")
+    HB_WARNING_TIME = parser.get("heartbeat_visualisation", "warning_time")
+    HB_DANGER_TIME = parser.get("heartbeat_visualisation", "danger_time")
 
 
 class index:
@@ -30,7 +41,6 @@ class index:
         for host in hosts:
             host.hbstate = HB_STATE_FINE
             delay = datetime.now() - host['last_contacted']
-            print delay.seconds
             if delay.seconds >= HB_WARNING_TIME:
                 host.hbstate = HB_STATE_WARNING
             if delay.seconds >= HB_DANGER_TIME:
@@ -70,7 +80,7 @@ class index:
             )
         )
         f = stack()
-        return render.index(hosts, f)
+        return render.index(hosts, f, SITE_REFRESH_TIME)
 
 
 class add:
@@ -78,6 +88,7 @@ class add:
     def try_host(self, hostname):
         # placeholder for some kind of ping to make sure the host 
         # exists/can connect
+        # TODO: actually write this.
         return True
 
     def POST(self):
@@ -166,4 +177,5 @@ class host:
 
 
 if __name__ == "__main__":
+    get_config()
     app.run()

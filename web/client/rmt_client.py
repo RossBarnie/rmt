@@ -12,6 +12,7 @@ urls = (
 )
 app = web.application(urls, globals())
 
+
 def prepare_message(message):
     web.header('Content-Type', 'application/json')
     return json.dumps(message)

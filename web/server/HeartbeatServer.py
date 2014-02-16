@@ -1,13 +1,28 @@
 """Threaded heartbeat server"""
 
-# Taken from http://code.activestate.com/recipes/52302-pyheartbeat-detecting-inactive-computers/
-# Under PSF license
+# Based on http://code.activestate.com/recipes/52302-pyheartbeat-detecting-inactive-computers/
+# Which is under PSF license
 
 UDP_PORT = 43278
 CHECK_PERIOD = 20
 CHECK_TIMEOUT = 15
+SERVER_IP = 0.0.0.0
 
 import socket, threading, time, dblayer, datetime
+from ConfigParser import SafeConfigParser
+
+
+def get_config():
+    global UDP_PORT
+    global CHECK_PERIOD
+    global CHECK_TIMEOUT
+    global SERVER_IP
+    parser = SafeConfigParser()
+    parser.read("server.cfg")
+    UDP_PORT = parser.get("heartbeat", "udp_port")
+    CHECK_PERIOD = parser.get("heartbeat", "check_period")
+    CHECK_TIMEOUT = parser.get("heartbeat", "check_timeout")
+    SERVER_IP = parser.get("heartbeat", "server_ip")
 
 
 class Heartbeats(dict):
@@ -41,7 +56,7 @@ class Receiver(threading.Thread):
         self.heartbeats = heartbeats
         self.recSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.recSocket.settimeout(CHECK_TIMEOUT)
-        self.recSocket.bind(('192.168.0.3', UDP_PORT))
+        self.recSocket.bind((SERVER_IP, UDP_PORT))
 
 
     def run(self):
@@ -76,4 +91,5 @@ def main():
         print 'Finished.'
 
 if __name__ == '__main__':
+    get_config()
     main()
