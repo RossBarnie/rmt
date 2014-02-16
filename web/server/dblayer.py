@@ -23,6 +23,7 @@ def get_host_address_from_id(host_id):
 
 
 def insert_new_address(address, port, stack):
+    #TODO: check if address exists before inserting
     db.insert('hosts', address=address, port=port, stack=stack)
 
 

@@ -75,7 +75,6 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
                 </div>
                 <div class="list-group">
                     $for host in hosts['green']
-                        <!-- TODO: add handler for heartbeat status -->
                         $ link = "/host/%s" % host.id
                         $ state = host.hbstate
                         <a class="list-group-item list-group-item-$state" href="$link">$host['address']</a>

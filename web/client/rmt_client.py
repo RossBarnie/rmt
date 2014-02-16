@@ -34,6 +34,7 @@ class cpu:
 
     def GET(self):
         utilisation = psutil.cpu_times_percent(interval=1)
+        # TODO: fix cpu bug when running on pi
         return prepare_message(utilisation)
 
 
