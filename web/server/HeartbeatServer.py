@@ -3,26 +3,28 @@
 # Based on http://code.activestate.com/recipes/52302-pyheartbeat-detecting-inactive-computers/
 # Which is under PSF license
 
-UDP_PORT = 43278
-CHECK_PERIOD = 20
-CHECK_TIMEOUT = 15
-SERVER_IP = "0.0.0.0"
-
-import socket, threading, time, dblayer, datetime
+import socket
+import threading
+import time
+import dblayer
+import datetime
 from ConfigParser import SafeConfigParser
 
 
-def get_config():
-    global UDP_PORT
-    global CHECK_PERIOD
-    global CHECK_TIMEOUT
-    global SERVER_IP
-    parser = SafeConfigParser()
-    parser.read("server.cfg")
-    UDP_PORT = parser.getint("heartbeat", "udp_port")
-    CHECK_PERIOD = parser.getint("heartbeat", "check_period")
-    CHECK_TIMEOUT = parser.getint("heartbeat", "check_timeout")
-    SERVER_IP = parser.get("heartbeat", "server_ip")
+class config:
+
+    udp_port = 43278
+    check_period = 20
+    check_timeout = 15
+    server_ip = "0.0.0.0"
+
+    def refresh_config(self):
+        parser = SafeConfigParser()
+        parser.read("server.cfg")
+        self.udp_port = parser.getint("heartbeat", "udp_port")
+        self.check_period = parser.getint("heartbeat", "check_period")
+        self.check_timeout = parser.getint("heartbeat", "check_timeout")
+        self.server_ip = parser.get("heartbeat", "server_ip")
 
 
 class Heartbeats(dict):
@@ -40,7 +42,9 @@ class Heartbeats(dict):
 
     def getSilent(self):
         """Return a list of clients with heartbeat older than CHECK_TIMEOUT"""
-        limit = time.time() - CHECK_TIMEOUT
+        cfg = config()
+        cfg.refresh_config()
+        limit = time.time() - cfg.check_timeout
         self._lock.acquire()
         silent = [ip for (ip, ipTime) in self.items() if ipTime < limit]
         self._lock.release()
@@ -55,8 +59,10 @@ class Receiver(threading.Thread):
         self.goOnEvent = goOnEvent
         self.heartbeats = heartbeats
         self.recSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.recSocket.settimeout(CHECK_TIMEOUT)
-        self.recSocket.bind((SERVER_IP, UDP_PORT))
+        cfg = config()
+        cfg.refresh_config()
+        self.recSocket.settimeout(cfg.check_timeout)
+        self.recSocket.bind((cfg.server_ip, cfg.udp_port))
 
 
     def run(self):
@@ -77,13 +83,15 @@ def main():
     heartbeats = Heartbeats()
     receiver = Receiver(goOnEvent = receiverEvent, heartbeats = heartbeats)
     receiver.start()
+    cfg = config()
     print ('Threaded heartbeat server listening on port %d\n'
-        'press Ctrl-C to stop\n') % UDP_PORT
+        'press Ctrl-C to stop\n') % cfg.udp_port
     try:
         while True:
             silent = heartbeats.getSilent()
             print 'Silent clients: %s' % silent
-            time.sleep(CHECK_PERIOD)
+            cfg.refresh_config()
+            time.sleep(cfg.check_period)
     except KeyboardInterrupt:
         print 'Exiting, please wait...'
         receiverEvent.clear()
@@ -91,5 +99,4 @@ def main():
         print 'Finished.'
 
 if __name__ == '__main__':
-    get_config()
     main()

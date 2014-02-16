@@ -20,30 +20,34 @@ app = web.application(urls, globals())
 HB_STATE_FINE = "active"
 HB_STATE_WARNING = "warning"
 HB_STATE_DANGER = "danger"
-HB_DANGER_TIME = 60
-HB_WARNING_TIME = 30
-SITE_REFRESH_TIME = 10
 
 
-def get_config():
-    global HB_WARNING_TIME
-    global HB_DANGER_TIME
-    parser = SafeConfigParser()
-    parser.read("server.cfg")
-    HB_WARNING_TIME = parser.get("heartbeat_visualisation", "warning_time")
-    HB_DANGER_TIME = parser.get("heartbeat_visualisation", "danger_time")
+class config:
+
+    site_refresh_time = 10
+    hb_danger_time = 60
+    hb_warning_time = 30
+
+    def refresh_config(self):
+        parser = SafeConfigParser()
+        parser.read("server.cfg")
+        self.hb_warning_time = parser.getint("heartbeat_visualisation", "warning_time")
+        self.hb_danger_time = parser.getint("heartbeat_visualisation", "danger_time")
+        self.site_refresh_time = parser.getint("website", "refresh_time")
 
 
 class index:
 
     def get_hb_state(self, hosts):
         new_hosts = []
+        cfg = config()
+        cfg.refresh_config()
         for host in hosts:
             host.hbstate = HB_STATE_FINE
             delay = datetime.now() - host['last_contacted']
-            if delay.seconds >= HB_WARNING_TIME:
+            if delay.seconds >= cfg.hb_warning_time:
                 host.hbstate = HB_STATE_WARNING
-            if delay.seconds >= HB_DANGER_TIME:
+            if delay.seconds >= cfg.hb_danger_time:
                 host.hbstate = HB_STATE_DANGER
             new_hosts += [host]
         return new_hosts
@@ -80,7 +84,9 @@ class index:
             )
         )
         f = stack()
-        return render.index(hosts, f, SITE_REFRESH_TIME)
+        cfg = config()
+        cfg.refresh_config()
+        return render.index(hosts, f, cfg.site_refresh_time)
 
 
 class add:
@@ -177,5 +183,4 @@ class host:
 
 
 if __name__ == "__main__":
-    get_config()
     app.run()
