@@ -23,15 +23,16 @@ class config:
 
 
 def main():
-    config.refresh_config()
+    cfg = config()
+    cfg.refresh_config()
     print ('Sending heartbeat to IP %s , port %d\n'
-           'press Ctrl-C to stop\n') % (config.server_ip, config.server_port)
+           'press Ctrl-C to stop\n') % (cfg.server_ip, cfg.server_port)
     while True:
-        config.refresh_config()
+        cfg.refresh_config()
         hbSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        hbSocket.sendto('PyHB', (config.server_ip, config.server_port))
+        hbSocket.sendto('PyHB', (cfg.server_ip, cfg.server_port))
         if __debug__: print 'Time: %s' % time.ctime()
-        time.sleep(config.beat_period)
+        time.sleep(cfg.beat_period)
 
 
 if __name__ == "__main__":
