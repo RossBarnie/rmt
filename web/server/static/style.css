@@ -1,4 +1,22 @@
-body {
-    font-family: Arial;
+.list-group-item-dead {
+  color: #a1a1a1;
+  background-color: #A9A9A9;
 }
-
+a.list-group-item-dead {
+  color: #D9D9D9;
+}
+a.list-group-item-dead .list-group-item-heading {
+  color: inherit;
+}
+a.list-group-item-dead:hover,
+a.list-group-item-dead:focus {
+  color: #D9D9D9;
+  background-color: #919191;
+}
+a.list-group-item-dead.active,
+a.list-group-item-dead.active:hover,
+a.list-group-item-dead.active:focus {
+  color: #fff;
+  background-color: #919191;
+  border-color: #a1a1a1;
+}

@@ -17,16 +17,18 @@ urls = (
 )
 app = web.application(urls, globals())
 
-HB_STATE_FINE = "active"
+HB_STATE_FINE = "success"
 HB_STATE_WARNING = "warning"
 HB_STATE_DANGER = "danger"
+HB_STATE_DEAD = "dead"
 
 
 class config:
 
-    site_refresh_time = 10
-    hb_danger_time = 60
-    hb_warning_time = 30
+    site_refresh_time = 10  # 10 seconds default
+    hb_danger_time = 60  # 60 seconds default
+    hb_warning_time = 30  # 30 seconds default
+    hb_dead_time = 86400  # 1 day default (86400 seconds)
 
     def refresh_config(self):
         parser = SafeConfigParser()
@@ -34,6 +36,7 @@ class config:
         self.hb_warning_time = parser.getint("heartbeat_visualisation", "warning_time")
         self.hb_danger_time = parser.getint("heartbeat_visualisation", "danger_time")
         self.site_refresh_time = parser.getint("website", "refresh_time")
+        self.hb_dead_time = parser.getint("heartbeat_visualisation", "dead_time")
 
 
 class index:
@@ -49,6 +52,8 @@ class index:
                 host.hbstate = HB_STATE_WARNING
             if delay.seconds >= cfg.hb_danger_time:
                 host.hbstate = HB_STATE_DANGER
+            if delay.seconds >= cfg.hb_dead_time:
+                host.hbstate = HB_STATE_DEAD
             new_hosts += [host]
         return new_hosts
 
