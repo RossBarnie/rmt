@@ -116,30 +116,7 @@ class add:
             return False
 
     def GET(self):
-        stack = web.form.Form(
-            web.form.Textbox(
-                'address',
-                # form.notnull doesn't appear to work
-                # TODO: fix form insertion working when it shouldn't
-                # (should be working now anyway thanks to the try_host method)
-                web.form.notnull,
-                id="address",
-                class_="form-control",
-            ),
-            web.form.Dropdown(
-                'stack',
-                [
-                    ('red', 'Red'),
-                    ('yellow', 'Yellow'),
-                    ('green', 'Green'),
-                    ('grey', 'Grey')
-                ],
-                id="stack",
-                class_="form-control btn btn-default dropdown-toggle"
-            )
-        )
-        form = stack()
-        return render.add(form)
+        return render.add()
 
     def POST(self):
         form = web.input()
