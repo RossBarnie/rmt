@@ -22,15 +22,10 @@ HB_STATE_FINE = "success"
 HB_STATE_WARNING = "warning"
 HB_STATE_DANGER = "danger"
 HB_STATE_DEAD = "dead"
-CPU_STATE_FINE = "success"
-CPU_STATE_WARNING = "warning"
-CPU_STATE_DANGER = "danger"
-RAM_STATE_FINE = "success"
-RAM_STATE_WARNING = "warning"
-RAM_STATE_DANGER = "danger"
-TEMP_STATE_FINE = "success"
-TEMP_STATE_WARNING = "warning"
-TEMP_STATE_DANGER = "danger"
+RES_STATE_FINE = "success"
+RES_STATE_WARNING = "warning"
+RES_STATE_DANGER = "danger"
+RES_STATE_DEFAULT = "default"
 
 
 class config:
@@ -74,7 +69,6 @@ class config:
             print "[ERROR] parsing config, section not found"
             print e
             return
-
 
 
 class index:
@@ -127,6 +121,7 @@ class add:
                 'address',
                 # form.notnull doesn't appear to work
                 # TODO: fix form insertion working when it shouldn't
+                # (should be working now anyway thanks to the try_host method)
                 web.form.notnull,
                 id="address",
                 class_="form-control",
@@ -158,8 +153,18 @@ class add:
 
 class host:
 
-    def GET(self, host_id):
+    def get_state(self, value, warn_val, danger_val):
+        state = RES_STATE_DEFAULT
+        if value:
+            state = RES_STATE_FINE
+            if value >= warn_val:
+                state = RES_STATE_WARNING
+            if value >= danger_val:
+                state = RES_STATE_DANGER
+        return state
 
+    def GET(self, host_id):
+        render_dict = {}
         host_table = dblayer.get_host_address_from_id(host_id)
 
         host_addr = ""
@@ -169,7 +174,7 @@ class host:
             count += 1
             host_addr = a['address']
             host_port = a['port']
-
+        render_dict['host_addr'] = host_addr
         if count > 1:
             print "[ERROR] more than one host with id %d" % host_id
         r = None
@@ -179,7 +184,8 @@ class host:
             r = requests.get(url + "/containers")
         except requests.RequestException as e:
             print "[ERROR] Container request to", \
-            host_addr, "failed:", e
+            host_addr, "failed:"
+            print e
             r = None
         containers = None
         if r:
@@ -193,6 +199,7 @@ class host:
                 for i in container['Names']:
                     names = names + i
                 container['Names'] = names
+        render_dict['containers'] = containers
         cpu_response = None
         ram_response = None
         temp_response = None
@@ -215,20 +222,34 @@ class host:
             ram = None
             temp = None
         except ValueError as v:
-            print "[ERROR] Problem decoding CPU/RAM/Temperature:", v
+            print "[ERROR] Problem decoding CPU/RAM/Temperature"
+            print v
             temp = None
         cpu_usage = []
-        ram_usage = {}
+        ram_usage = None
         if cpu:
             cpu_usage = cpu[0] + cpu[1]
         if ram:
-            ram_usage = {}
-            ram_usage['total'] = int(round(ram['ram_total'] / 1024.0 / 1024.0))
-            ram_usage['used'] = int(round(ram['ram_used'] / 1024.0 / 1024.0))
+            ram_dict = {}
+            ram_dict['total'] = ram['ram_total'] / 1024.0 / 1024.0
+            ram_dict['used'] = ram['ram_used'] / 1024.0 / 1024.0
+            ram_usage = round(ram_dict['used'] / ram_dict['total'] * 100, 1)
         if temp:
             temp = round(temp/1000.0, 2)
+        render_dict['temp'] = temp
+        render_dict['ram_usage'] = ram_usage
+        render_dict['cpu_usage'] = cpu_usage
 
-        return render.host(host_addr, containers, cpu_usage, ram_usage, temp)
+        cfg = config()
+        cfg.refresh_config()
+        cpu_state = self.get_state(cpu_usage, cfg.cpu_warning, cfg.cpu_danger)
+        ram_state = self.get_state(ram_usage, cfg.ram_warning, cfg.ram_danger)
+        temp_state = self.get_state(temp, cfg.temp_warning, cfg.temp_danger)
+        render_dict['cpu_state'] = cpu_state
+        render_dict['ram_state'] = ram_state
+        render_dict['temp_state'] = temp_state
+
+        return render.host(render_dict)
 
 
 if __name__ == "__main__":

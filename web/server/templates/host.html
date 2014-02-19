@@ -1,37 +1,54 @@
-$def with (host_addr, containers, cpu_usage, ram_usage, temp)
-$var title: rmt - $host_addr
-$var cssfiles: /static/bootstrap/css/bootstrap.css
+$def with (render)
+$var title: rmt - $render['host_addr']
+$var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 
 
 <div class="container">
 	<div class="row">
 		<div class="page-header">
 			<h1>
-				Host <small>$host_addr</small>
+				Host <small>$render['host_addr']</small>
 			</h1>
 		</div>
-        <!--TODO: add in state mechanism for labels-->
-		$if cpu_usage:
-			<h4>CPU Usage(%): <span class="label label-default">$cpu_usage</span></h4>
-		$else:
-			<h4>CPU Usage(%): <span class="label label-info">Unknown</span></h4>
-		$if ram_usage:
-			<h4>RAM Usage (MiB): <span class="label label-default">$ram_usage['used'] / $ram_usage['total']</span></h4>
-		$else:
-			<h4>RAM Usage (MiB): <span class="label label-info">Unknown</span></h4>
-		$if temp:
-			<h4>Temperature (°C): <span class="label label-default">$temp</span></h4>
-		$else:
-			<h4>Temperature (°C): <span class="label label-info">Unknown</span></h4>
 	</div>
-    <div class="row">
-		$if containers:
+	<div class="row">
+		<div class="panel panel-default">
+			<table class="table">
+				<thead>
+				<th>
+					CPU (%)
+					$if render['cpu_usage']:
+						<span class="label label-$render['cpu_state']">$render['cpu_usage']</span>
+					$else:
+						<span class="label label-default">Unknown</span>
+				</th>
+				<th>
+					RAM (%)
+					$if render['ram_usage']:
+						<span class="label label-$render['ram_state']">$render['ram_usage']</span>
+					$else:
+						<span class="label label-default">Unknown</span>
+				</th>
+				<th>
+					Temperature (°C)
+					$if render['temp']:
+						<span class="label label-$render['temp_state']">$render['temp']</span>
+					$else:
+						<span class="label label-default">Unknown</span>
+				</th>
+				</thead>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="panel panel-default">
+		$if render['containers']:
 			<table class="table table-striped">
 			<thead>
-			$for key in containers[0].keys():
+			$for key in render['containers'][0].keys():
 				<th>$key</th>
 			</thead>
-			$for container in containers:
+			$for container in render['containers']:
 				<tr>
 				$for value in container.values():
 					<td>
@@ -42,9 +59,9 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 				</tr>
 			</table>
 		$else:
-        <!--TODO: add more visually appealing handler for this-->
 			No containers were found
-		</p>
+		<!--TODO: add more visually appealing handler for this-->
+		</div>
 	</div>
 </div>
 

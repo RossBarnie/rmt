@@ -20,3 +20,7 @@ a.list-group-item-dead.active:focus {
   background-color: #919191;
   border-color: #a1a1a1;
 }
+
+.label {
+  font-size: 100%
+}
