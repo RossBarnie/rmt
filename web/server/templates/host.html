@@ -11,26 +11,25 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 			</h1>
 		</div>
 		$if cpu_usage:
-			CPU Usage(%): $cpu_usage
+			<h4>CPU Usage(%): <span class="label label-default">$cpu_usage</span></h4>
 		$else:
-			Could not find CPU information
-		<br>
+			<h4>CPU Usage(%): <span class="label label-info">Unknown</span></h4>
 		$if ram_usage:
-			RAM Usage (MiB): $ram_usage['used'] / $ram_usage['total']
+			<h4>RAM Usage (MiB): <span class="label label-default">$ram_usage['used'] / $ram_usage['total']</span></h4>
 		$else:
-			Could not find RAM information
-		<br>
+			<h4>RAM Usage (MiB): <span class="label label-info">Unknown</span></h4>
 		$if temp:
-			Temperature (°C): $temp
+			<h4>Temperature (°C): <span class="label label-default">$temp</span></h4>
 		$else:
-			Temperature information unavailable
-		<p>
+			<h4>Temperature (°C): <span class="label label-info">Unknown</span></h4>
+	</div>
+    <div class="row">
 		$if containers:
-			<table class="table">
-			<tr>
+			<table class="table table-striped">
+			<thead>
 			$for key in containers[0].keys():
-				<td>$key</td>
-			</tr>
+				<th>$key</th>
+			</thead>
 			$for container in containers:
 				<tr>
 				$for value in container.values():
