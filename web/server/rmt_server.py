@@ -1,11 +1,11 @@
 import web
-from web import form
 import requests
 import dblayer
 import os
 import urlparse
 from datetime import datetime
 from ConfigParser import SafeConfigParser
+from rfc3987 import parse
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -67,16 +67,33 @@ class index:
         green_hosts = self.get_hb_state(green_hosts)
         grey_hosts = self.get_hb_state(grey_hosts)
         hosts = {"yellow": yellow_hosts, "red": red_hosts, "green": green_hosts, "grey": grey_hosts}
-        stack = form.Form(
-            form.Textbox(
+        cfg = config()
+        cfg.refresh_config()
+        return render.index(hosts, cfg.site_refresh_time)
+
+
+class add:
+
+    def try_host(self, hostname):
+        try:
+            result = parse(hostname, rule="URI")
+            return True
+        except ValueError, e:
+            print "[ERROR] address given does not match URI definition"
+            print e
+            return False
+
+    def GET(self):
+        stack = web.form.Form(
+            web.form.Textbox(
                 'address',
                 # form.notnull doesn't appear to work
                 # TODO: fix form insertion working when it shouldn't
-                form.notnull,
+                web.form.notnull,
                 id="address",
                 class_="form-control",
             ),
-            form.Dropdown(
+            web.form.Dropdown(
                 'stack',
                 [
                     ('red', 'Red'),
@@ -88,19 +105,8 @@ class index:
                 class_="form-control btn btn-default dropdown-toggle"
             )
         )
-        f = stack()
-        cfg = config()
-        cfg.refresh_config()
-        return render.index(hosts, f, cfg.site_refresh_time)
-
-
-class add:
-
-    def try_host(self, hostname):
-        # placeholder for some kind of ping to make sure the host 
-        # exists/can connect
-        # TODO: actually write this.
-        return True
+        form = stack()
+        return render.add(form)
 
     def POST(self):
         form = web.input()

@@ -1,0 +1,21 @@
+$def with (form)
+$var title: rmt - Add Host
+$var cssfiles: /static/bootstrap/css/bootstrap.css
+
+<div class="container">
+    <h1>Add Host</h1>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 well">
+            <form role="form" class="form-inline" name="stack-form" method="post" action="add">
+                $if not form.valid: <p class="error">Invalid entry</p>
+                <div class="form-group">
+                    $:form.address.render()
+                </div>
+                <div class="form-group">
+                    $:form.stack.render()
+                </div>
+                <button value="Add" type="submit" class="form-control btn btn-info">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>

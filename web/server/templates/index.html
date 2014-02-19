@@ -1,24 +1,7 @@
-$def with (hosts, form, refresh_time)
+$def with (hosts, refresh_time)
 $var title: rmt - Overview
 $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 <meta http-equiv="refresh" content="$refresh_time">
-<div class="container">
-    <div class="row">
-        <div class="col-lg-6 well">
-            <form role="form" class="form-inline" name="stack-form" method="post" action="add">
-                $if not form.valid: <p class="error">Invalid entry</p>
-                <div class="form-group">
-                    $:form.address.render()
-                </div>
-                <div class="form-group">
-                    $:form.stack.render()
-                </div>
-                <button value="Add" type="submit" class="form-control btn btn-info">Submit</button>
-
-            </form>
-        </div>
-    </div>
-</div>
 
 <div class="container">
     <div class="row">
