@@ -16,7 +16,21 @@ Unless otherwise stated, all work herein is to be considered under the accompany
 Installation
 ============
 
-Just check out the repository on your server and on your host machines and follow the instructions below.
+Just check out the repository on your server and on your host machines and follow the instructions below, ensuring you have the dependencies listed below.
+
+Dependencies
+------------
+
+Python 2.7
+
+These are the known python module dependencies (some may be in site-packages):
+- web
+- requests
+- os
+- urlparse
+- datetime
+- ConfigParser
+- rfc3987
 
 Server
 ------
