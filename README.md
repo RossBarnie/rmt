@@ -22,6 +22,8 @@ Dependencies
 ------------
 
 Python 2.7
+mysql
+mysql-server
 
 These are the known python module dependencies (some may be in site-packages):
 - web
@@ -31,6 +33,13 @@ These are the known python module dependencies (some may be in site-packages):
 - datetime
 - ConfigParser
 - rfc3987
+
+Database
+--------
+
+The database script needs to be run once on the server. To do this, simply use the following mysql command in a terminal:
+
+mysql --user=USER --password=PASSWORD < PATH\_TO\_RMT/web/db/createDb.sql
 
 Server
 ------
