@@ -10,6 +10,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 				Host <small>$host_addr</small>
 			</h1>
 		</div>
+        <!--TODO: add in state mechanism for labels-->
 		$if cpu_usage:
 			<h4>CPU Usage(%): <span class="label label-default">$cpu_usage</span></h4>
 		$else:
@@ -41,6 +42,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 				</tr>
 			</table>
 		$else:
+        <!--TODO: add more visually appealing handler for this-->
 			No containers were found
 		</p>
 	</div>

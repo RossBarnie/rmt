@@ -57,17 +57,21 @@ class config:
             self.hb_danger_time = parser.getint("heartbeat_visualisation", "danger_time")
             self.site_refresh_time = parser.getint("website", "refresh_time")
             self.hb_dead_time = parser.getint("heartbeat_visualisation", "dead_time")
-            self.cpu_fine = parser.getint("resource_visualisation", "cpu_fine")
-            self.cpu_warning = parser.getint("resource_visualisation", "cpu_warning")
-            self.cpu_danger = parser.getint("resource_visualisation", "cpu_danger")
-            self.ram_fine = parser.getint("resource_visualisation", "ram_fine")
-            self.ram_warning = parser.getint("resource_visualisation", "ram_warning")
-            self.ram_danger = parser.getint("resource_visualisation", "ram_danger")
-            self.temp_fine = parser.getint("resource_visualisation", "temp_fine")
-            self.temp_warning = parser.getint("resource_visualisation", "temp_warning")
-            self.temp_danger = parser.getint("resource_visualisation", "temp_danger")
+            self.cpu_fine = parser.getint("resource_visual", "cpu_fine")
+            self.cpu_warning = parser.getint("resource_visual", "cpu_warning")
+            self.cpu_danger = parser.getint("resource_visual", "cpu_danger")
+            self.ram_fine = parser.getint("resource_visual", "ram_fine")
+            self.ram_warning = parser.getint("resource_visual", "ram_warning")
+            self.ram_danger = parser.getint("resource_visual", "ram_danger")
+            self.temp_fine = parser.getint("resource_visual", "temp_fine")
+            self.temp_warning = parser.getint("resource_visual", "temp_warning")
+            self.temp_danger = parser.getint("resource_visual", "temp_danger")
         except ConfigParser.ParsingError, e:
             print "[ERROR] parsing config failed"
+            print e
+            return
+        except ConfigParser.NoSectionError, e:
+            print "[ERROR] parsing config, section not found"
             print e
             return
 
