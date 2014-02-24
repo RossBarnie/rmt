@@ -158,6 +158,7 @@ class host:
             host_addr = a['address']
             host_port = a['port']
         render_dict['host_addr'] = host_addr
+        render_dict['host_port'] = host_port
         if count > 1:
             print "[ERROR] more than one host with id %d" % host_id
         r = None
