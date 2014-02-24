@@ -135,6 +135,13 @@ class add:
 
 class host:
 
+    def POST(self, host_id):
+        host_table = dblayer.get_host_address_from_id(host_id)
+        host_info = self.get_host_address(host_id)
+        address = "http://{}:{}".format(host_info[0], host_info[1])
+        requests.get(address + "/reboot", timeout=5)
+        web.redirect("/")
+
     def get_state(self, value, warn_val, danger_val):
         state = RES_STATE_DEFAULT
         if value:
@@ -145,9 +152,7 @@ class host:
                 state = RES_STATE_DANGER
         return state
 
-    def GET(self, host_id):
-        timeout = 5
-        render_dict = {}
+    def get_host_address(self, host_id):
         host_table = dblayer.get_host_address_from_id(host_id)
 
         host_addr = ""
@@ -157,10 +162,19 @@ class host:
             count += 1
             host_addr = a['address']
             host_port = a['port']
-        render_dict['host_addr'] = host_addr
-        render_dict['host_port'] = host_port
         if count > 1:
             print "[ERROR] more than one host with id %d" % host_id
+
+        return [host_addr, host_port]
+
+    def GET(self, host_id):
+        timeout = 5
+        render_dict = {}
+        host_table = dblayer.get_host_address_from_id(host_id)
+
+        host_info = self.get_host_address(host_id)
+        render_dict['host_addr'] = host_addr = host_info[0]
+        render_dict['host_port'] = host_port = host_info[1]
         r = None
         url = ""
         try:

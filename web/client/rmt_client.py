@@ -9,7 +9,8 @@ urls = (
     '/cpu', 'cpu',
     '/ram', 'ram',
     '/containers', 'containers',
-    '/temperature', 'temp'
+    '/temperature', 'temp',
+    '/reboot', 'reboot'
 )
 app = web.application(urls, globals())
 
@@ -17,6 +18,7 @@ app = web.application(urls, globals())
 def prepare_message(message):
     web.header('Content-Type', 'application/json')
     return json.dumps(message)
+
 
 class containers:
 

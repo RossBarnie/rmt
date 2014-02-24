@@ -38,7 +38,12 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 				</th>
                 <th>
                     $ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
-                    <a href="$link/reboot">Reboot Host</a>
+
+                    <form role="form" method="post" id="reboot-form">
+                        <div class="form-group">
+                            <button type="submit" class="btn">Reboot</button>
+                        </div>
+                    </form>
                 </th>
 				</thead>
 			</table>
