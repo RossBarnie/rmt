@@ -130,6 +130,8 @@ class add:
             if not parser.scheme:
                 address = "http://%s" % address
             dblayer.insert_new_address(address, port, form.stack)
+        else:
+            web.redirect('/add')
         raise web.redirect('/')
 
 
