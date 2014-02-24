@@ -13,7 +13,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 	</div>
 	<div class="row">
 		<div class="panel panel-default">
-			<table class="table">
+			<table class="table table-responsive">
 				<thead>
 				<th>
 					CPU (%)
@@ -39,7 +39,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
                 <th>
                     $ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
                     <form role="form" method="post" id="reboot-form">
-                        <button type="submit" class="btn btn-danger">Reboot</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Reboot Host</button>
                     </form>
                 </th>
 				</thead>
