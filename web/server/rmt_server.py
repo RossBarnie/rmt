@@ -146,7 +146,7 @@ class host:
 
     def get_state(self, value, warn_val, danger_val):
         state = RES_STATE_DEFAULT
-        if value:
+        if value >= 0:
             state = RES_STATE_FINE
             if value >= warn_val:
                 state = RES_STATE_WARNING
@@ -225,7 +225,7 @@ class host:
             print "[ERROR] Problem decoding CPU/RAM/Temperature"
             print v
             temp = None
-        cpu_usage = []
+        cpu_usage = -1
         ram_usage = None
         if cpu:
             cpu_usage = cpu[0] + cpu[1]
@@ -239,7 +239,6 @@ class host:
         render_dict['temp'] = temp
         render_dict['ram_usage'] = ram_usage
         render_dict['cpu_usage'] = cpu_usage
-
         cfg = config()
         cfg.refresh_config()
         cpu_state = self.get_state(cpu_usage, cfg.cpu_warning, cfg.cpu_danger)

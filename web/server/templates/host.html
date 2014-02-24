@@ -17,7 +17,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 				<thead>
 				<th>
 					CPU (%)
-					$if render['cpu_usage']:
+					$if render['cpu_usage'] >= 0:
 						<span class="label label-$render['cpu_state']">$render['cpu_usage']</span>
 					$else:
 						<span class="label label-default">Unknown</span>
