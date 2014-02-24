@@ -3,6 +3,7 @@ import psutil
 import json
 import docker
 import command
+import subprocess
 
 urls = (
     '/cpu', 'cpu',
@@ -60,6 +61,12 @@ class temp:
             return None
         return prepare_message(temp)
         
+
+class reboot:
+
+    def GET(self):
+        subprocess.call(['reboot'])
+        web.redirect('/')
 
 if __name__ == "__main__":
     app.run()

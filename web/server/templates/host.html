@@ -36,6 +36,10 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 					$else:
 						<span class="label label-default">Unknown</span>
 				</th>
+                <th>
+                    $ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
+                    <a href="$link/reboot">Reboot Host</a>
+                </th>
 				</thead>
 			</table>
 		</div>
