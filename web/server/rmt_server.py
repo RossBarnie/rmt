@@ -122,8 +122,13 @@ class add:
         form = web.input()
         if self.try_host(form.address):
             parser = urlparse.urlparse(form.address)
-            port = parser.port
+            if parser.port:
+                port = parser.port
+            else:
+                port = 80
             address = parser.hostname
+            if not parser.scheme:
+                address = "http://%s" % address
             dblayer.insert_new_address(address, port, form.stack)
         raise web.redirect('/')
 
@@ -141,6 +146,7 @@ class host:
         return state
 
     def GET(self, host_id):
+        timeout = 5
         render_dict = {}
         host_table = dblayer.get_host_address_from_id(host_id)
 
@@ -158,7 +164,7 @@ class host:
         url = ""
         try:
             url = "http://{}:{}".format(host_addr, host_port)
-            r = requests.get(url + "/containers")
+            r = requests.get(url + "/containers", timeout=timeout)
         except requests.RequestException as e:
             print "[ERROR] Container request to", \
             host_addr, "failed:"
@@ -184,11 +190,11 @@ class host:
         ram = None
         temp = None
         try:
-            cpu_response = requests.get('%s/cpu' % url)
+            cpu_response = requests.get('%s/cpu' % url, timeout=timeout)
             cpu = cpu_response.json()
-            ram_response = requests.get('%s/ram' % url)
+            ram_response = requests.get('%s/ram' % url, timeout=timeout)
             ram = ram_response.json()
-            temp_response = requests.get('%s/temperature' % url)
+            temp_response = requests.get('%s/temperature' % url, timeout=timeout)
             temp = temp_response.json()
         except requests.RequestException as e:
             print "[ERROR] CPU/RAM/temperature request error:", e

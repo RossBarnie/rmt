@@ -11,7 +11,7 @@ def get_hosts():
 
 
 def get_hosts_by_stack(stack):
-    return db.select('hosts', where="hosts.stack = '%s'" % stack)
+    return db.select('hosts', where="hosts.stack = '%s'" % stack, order="hosts.address")
 
 
 def get_host_id_from_address(address):
