@@ -21,9 +21,10 @@ Just check out the repository on your server and on your host machines and follo
 Dependencies
 ------------
 
-Python 2.7
-mysql
-mysql-server
+- Python 2.7
+- Docker (on client-side)
+- mysql (on server-side)
+- mysql-server (on server-side)
 
 These are the known python module dependencies (some may be in site-packages):
 - web
