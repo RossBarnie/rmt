@@ -15,33 +15,34 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 		<div class="panel panel-default">
 			<table class="table table-responsive">
 				<thead>
-                <th>
+                <th class="text-center">
                     <form role="form" method="get" id="delete-form" action="/delete/$render['host_id']">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </th>
-				<th>
+				<th class="text-center">
+
 					CPU (%)
 					$if render['cpu_usage'] >= 0:
 						<span class="label label-$render['cpu_state']">$render['cpu_usage']</span>
 					$else:
 						<span class="label label-default">Unknown</span>
 				</th>
-				<th>
+				<th class="text-center">
 					RAM (%)
 					$if render['ram_usage']:
 						<span class="label label-$render['ram_state']">$render['ram_usage']</span>
 					$else:
 						<span class="label label-default">Unknown</span>
 				</th>
-				<th>
+				<th class="text-center">
 					Temperature (°C)
 					$if render['temp']:
 						<span class="label label-$render['temp_state']">$render['temp']</span>
 					$else:
 						<span class="label label-default">Unknown</span>
 				</th>
-                <th>
+                <th class="text-center">
                     $ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
                     <form role="form" method="post" id="reboot-form">
                         <button type="submit" class="btn btn-danger btn-sm">Reboot Host</button>
