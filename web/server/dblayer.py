@@ -40,3 +40,13 @@ def update_heartbeat(address, time):
 
 def insert_new_heartbeat(name, time):
     db.insert('hosts', address=name, last_contacted=time)
+
+
+def delete_host(host_id):
+    success = True
+    exists = db.select('hosts', where="hosts.id = " + host_id)
+    if exists:
+        db.delete('hosts', where="hosts.id = " + host_id)
+    else:
+        success = False
+    return success

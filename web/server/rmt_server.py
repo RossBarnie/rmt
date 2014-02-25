@@ -14,7 +14,8 @@ render = web.template.render(template_root + '/templates/', base='layout')
 urls = (
     '/', 'index',
     '/host/(.*)', 'host',
-    '/add', 'add'
+    '/add', 'add',
+    '/delete/(.*)', 'delete'
 )
 app = web.application(urls, globals())
 
@@ -172,8 +173,7 @@ class host:
     def GET(self, host_id):
         timeout = 5
         render_dict = {}
-        host_table = dblayer.get_host_address_from_id(host_id)
-
+        render_dict['host_id'] = host_id
         host_info = self.get_host_address(host_id)
         render_dict['host_addr'] = host_addr = host_info[0]
         render_dict['host_port'] = host_port = host_info[1]
@@ -249,6 +249,16 @@ class host:
         render_dict['temp_state'] = temp_state
 
         return render.host(render_dict)
+
+
+class delete:
+
+    def GET(self, host_id):
+        if dblayer.delete_host(host_id):
+            print "[INFO] deleted host " + host_id
+        else:
+            print "[ERROR] host " + host_id + "not deleted, host not found"
+        web.redirect('/')
 
 
 if __name__ == "__main__":
