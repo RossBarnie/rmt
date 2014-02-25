@@ -14,6 +14,10 @@ def get_hosts_by_stack(stack):
     return db.select('hosts', where="hosts.stack = '%s'" % stack, order="hosts.address")
 
 
+def get_hosts_with_no_stack():
+    return db.select('hosts', where="hosts.stack is null")
+
+
 def get_host_id_from_address(address):
     return db.select('hosts', where="hosts.address = " + address)
 

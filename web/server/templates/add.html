@@ -1,3 +1,4 @@
+$def with (unassigned)
 $var title: rmt - Add Host
 $var cssfiles: /static/bootstrap/css/bootstrap.css
 
@@ -58,5 +59,19 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
                 </div>
             </div>
         </div>
-    </div>
+    </div> <!-- end row -->
+    $if unassigned:
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Unassigned Hosts
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        $for host in unassigned:
+                            <li class="list-group-item">$host.address</li>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
