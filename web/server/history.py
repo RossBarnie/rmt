@@ -33,14 +33,11 @@ def main():
         ram_dict = get_resource(address, host.port, "ram")
         if ram_dict:
             used = ram_dict['ram_used'] / 1024.0 / 1024
-            print used
             total = ram_dict['ram_total'] / 1024.0 / 1024
-            print total
             ram = round(used / total * 100, 1)
-        print ram_dict
-        temp = get_resource(address, host.port, "temperature")
-        if temp:
-            temp = round(temp/1000.0, 2)
+        temp_response = get_resource(address, host.port, "temperature")
+        if temp_response:
+            temp = round(temp_response/1000.0, 2)
         effective = datetime.datetime.utcnow()
         expire = effective + datetime.timedelta(weeks=1)
         effective = effective.isoformat(" ")

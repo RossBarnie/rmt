@@ -108,20 +108,25 @@ class index:
 class add:
 
     def try_host(self, hostname):
+        success = False
         try:
             result = parse(hostname, rule="URI")
-            return True
+            if result['authority'] != '':
+                return True
         except ValueError, e:
             print "[ERROR] address given does not match URI definition"
             print e
-            return False
+        return success
 
     def GET(self):
+        ren_dict = {}
         unassigned = dblayer.get_unassigned()
-        return render.add(unassigned)
+        ren_dict['unassigned'] = unassigned
+        return render.add(ren_dict)
 
     def POST(self):
         form = web.input()
+        print "[INFO] Trying to add {}".format(form.address)
         if self.try_host(form.address):
             parser = urlparse.urlparse(form.address)
             if parser.port:
@@ -132,9 +137,12 @@ class add:
             if not parser.scheme:
                 address = "http://%s" % address
             dblayer.insert_new_address(address, port, form.stack)
+            raise web.redirect('/')
         else:
-            web.redirect('/add')
-        raise web.redirect('/')
+            ren_dict = {}
+            ren_dict['unassigned'] = dblayer.get_unassigned()
+            ren_dict['status'] = False
+            return render.add(ren_dict)
 
 
 class host:
