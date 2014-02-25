@@ -13,10 +13,10 @@ from ConfigParser import SafeConfigParser
 
 class config:
 
-    udp_port = 43278
+    udp_port = 43278  # default 43278
     check_period = 20
     check_timeout = 15
-    server_ip = "0.0.0.0"
+    server_ip = "0.0.0.0"  # must be an IP address
 
     def refresh_config(self):
         parser = SafeConfigParser()
@@ -84,12 +84,11 @@ def main():
     receiver = Receiver(goOnEvent = receiverEvent, heartbeats = heartbeats)
     receiver.start()
     cfg = config()
+    cfg.refresh_config()
     print ('Threaded heartbeat server listening on port %d\n'
         'press Ctrl-C to stop\n') % cfg.udp_port
     try:
         while True:
-            silent = heartbeats.getSilent()
-            print 'Silent clients: %s' % silent
             cfg.refresh_config()
             time.sleep(cfg.check_period)
     except KeyboardInterrupt:
