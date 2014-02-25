@@ -62,3 +62,7 @@ def delete_host(host_id):
 
 def add_history(host_id, cpu, ram, temp, effective, expire):
     db.insert('history', host_id=host_id, cpu=cpu, ram=ram, temperature=temp, effective=effective, expiry=expire)
+
+
+def get_history_from_address(host_id):
+    db.select('history', where="history.host_id = '{}'".format(host_id))
