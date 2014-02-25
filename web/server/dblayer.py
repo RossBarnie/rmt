@@ -14,7 +14,11 @@ def get_hosts_by_stack(stack):
     return db.select('hosts', where="hosts.stack = '%s'" % stack, order="hosts.address")
 
 
-def get_hosts_with_no_stack():
+def get_assigned():
+    return db.select('hosts', where="hosts.stack is not null")
+
+
+def get_unassigned():
     return db.select('hosts', where="hosts.stack is null")
 
 
@@ -54,3 +58,7 @@ def delete_host(host_id):
     else:
         success = False
     return success
+
+
+def add_history(host_id, cpu, ram, temp, effective, expire):
+    db.insert('history', host_id=host_id, cpu=cpu, ram=ram, temperature=temp, effective=effective, expiry=expire)

@@ -117,7 +117,7 @@ class add:
             return False
 
     def GET(self):
-        unassigned = dblayer.get_hosts_with_no_stack()
+        unassigned = dblayer.get_unassigned()
         return render.add(unassigned)
 
     def POST(self):
