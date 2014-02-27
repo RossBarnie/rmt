@@ -108,6 +108,7 @@ class reboot:
         logging.info("reboot request received")
         cfg = config()
         t = rebootThread(cfg.reboot_delay)
+        t.start()
         return prepare_message("Rebooting in {} seconds".format(cfg.reboot_delay))
         #TODO: this redirect shouldn't be here, this is server-side logic
 
