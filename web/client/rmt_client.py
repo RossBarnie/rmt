@@ -5,6 +5,9 @@ import docker
 import command
 import subprocess
 import logging
+import threading
+import time
+import ConfigParser
 
 urls = (
     '/cpu', 'cpu',
@@ -19,6 +22,27 @@ app = web.application(urls, globals())
 def prepare_message(message):
     web.header('Content-Type', 'application/json')
     return json.dumps(message)
+
+
+class config:
+
+    def __init__(self):
+        self.reboot_delay = 5  # default 5 seconds
+        self.refresh_config()
+
+    def refresh_config(self):
+        parser = ConfigParser.SafeConfigParser()
+        try:
+            parser.read("hbclient.cfg")
+            self.reboot_delay = parser.getint("util", "reboot_delay")
+        except ConfigParser.ParsingError, e:
+            logging.error("parsing config failed")
+            logging.exception(e)
+            return
+        except ConfigParser.NoSectionError, e:
+            logging.error("parsing config, section not found")
+            logging.exception(e)
+            return
 
 
 class containers:
@@ -66,12 +90,29 @@ class temp:
         return prepare_message(temp)
         
 
+class rebootThread(threading.Thread):
+
+    def __init__(self, delay):
+        threading.Thread.__init__(self)
+        self.delay = delay
+
+    def run(self):
+        time.sleep(self.delay)
+        logging.info("rebooting NOW")
+        subprocess.call(['reboot'])
+
+
 class reboot:
 
     def GET(self):
-        subprocess.call(['reboot'])
-        web.redirect('/')
+        logging.info("reboot request received")
+        cfg = config()
+        t = rebootThread(cfg.reboot_delay)
+        return prepare_message("Rebooting in {} seconds".format(cfg.reboot_delay))
         #TODO: this redirect shouldn't be here, this is server-side logic
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='client.log', level=logging.INFO)
+    logging.info("rmt_client started")
     app.run()
+    logging.info("rmt_client stopped")

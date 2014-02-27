@@ -227,4 +227,7 @@ class delete:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='server.log', level=logging.INFO)
+    logging.info("Started server")
     app.run()
+    logging.info("Stopped server")
