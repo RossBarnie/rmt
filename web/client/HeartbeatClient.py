@@ -10,9 +10,11 @@ from ConfigParser import SafeConfigParser
 
 class config:
 
-    server_ip = "0.0.0.0"
-    server_port = 8080
-    beat_period = 5
+    def __init__(self):
+        self.server_ip = "0.0.0.0"
+        self.server_port = 8080
+        self.beat_period = 5
+        self.refresh_config()
 
     def refresh_config(self):
         parser = SafeConfigParser()
@@ -24,7 +26,6 @@ class config:
 
 def main():
     cfg = config()
-    cfg.refresh_config()
     print ('Sending heartbeat to IP %s , port %d\n'
            'press Ctrl-C to stop\n') % (cfg.server_ip, cfg.server_port)
     while True:

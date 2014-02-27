@@ -4,8 +4,7 @@ import dblayer
 import os
 import urlparse
 from datetime import datetime
-from ConfigParser import SafeConfigParser
-import ConfigParser
+from config import config
 from rfc3987 import parse
 
 template_root = os.path.join(os.path.dirname(__file__))
@@ -27,49 +26,6 @@ RES_STATE_FINE = "success"
 RES_STATE_WARNING = "warning"
 RES_STATE_DANGER = "danger"
 RES_STATE_DEFAULT = "default"
-
-
-class config:
-
-    site_refresh_time = 10  # 10 seconds default
-    hb_danger_time = 60  # 60 seconds default
-    hb_warning_time = 30  # 30 seconds default
-    hb_dead_time = 86400  # 1 day default (86400 seconds)
-    cpu_fine = 0  # 0% default
-    cpu_warning = 50  # 50% default
-    cpu_danger = 75  # 75% default
-    ram_fine = 0  # 0% default
-    ram_warning = 50  # 50% default
-    ram_danger = 75  # 75% default
-    temp_fine = 0  # 0 degrees C default
-    temp_warning = 30  # 30 degrees C default
-    temp_danger = 40  # 40 degrees C default
-
-    def refresh_config(self):
-        parser = SafeConfigParser()
-        try:
-            parser.read("server.cfg")
-            self.hb_warning_time = parser.getint("heartbeat_visualisation", "warning_time")
-            self.hb_danger_time = parser.getint("heartbeat_visualisation", "danger_time")
-            self.site_refresh_time = parser.getint("website", "refresh_time")
-            self.hb_dead_time = parser.getint("heartbeat_visualisation", "dead_time")
-            self.cpu_fine = parser.getint("resource_visual", "cpu_fine")
-            self.cpu_warning = parser.getint("resource_visual", "cpu_warning")
-            self.cpu_danger = parser.getint("resource_visual", "cpu_danger")
-            self.ram_fine = parser.getint("resource_visual", "ram_fine")
-            self.ram_warning = parser.getint("resource_visual", "ram_warning")
-            self.ram_danger = parser.getint("resource_visual", "ram_danger")
-            self.temp_fine = parser.getint("resource_visual", "temp_fine")
-            self.temp_warning = parser.getint("resource_visual", "temp_warning")
-            self.temp_danger = parser.getint("resource_visual", "temp_danger")
-        except ConfigParser.ParsingError, e:
-            print "[ERROR] parsing config failed"
-            print e
-            return
-        except ConfigParser.NoSectionError, e:
-            print "[ERROR] parsing config, section not found"
-            print e
-            return
 
 
 class index:
