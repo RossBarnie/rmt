@@ -3,7 +3,7 @@ __author__ = 'ross'
 import dblayer
 import requests
 import datetime
-
+import logging
 
 def get_resource(address, port, resource):
     ret = None
@@ -12,17 +12,17 @@ def get_resource(address, port, resource):
         if address is not None and port is not None and resource is not None:
             r = requests.get("http://{}:{}/{}".format(address, port, resource), timeout=2)
         else:
-            print "[WARNING] attempted to access address with missing information"
+            logging.warning("attempted to access address with missing information")
     except requests.RequestException, e:
-        print "[ERROR] request for {} failed".format(resource)
-        print e
+        logging.error("request for {} failed".format(resource))
+        logging.exception(e)
     if r is not None:
         if r.status_code == 200:
             ret = r.json()
         else:
-            print "[WARNING] request to http://{}:{}/{} status code:{}".format(address, port, resource, r.status_code)
+            logging.warning(" request to http://{}:{}/{} status code:{}".format(address, port, resource, r.status_code))
     else:
-        print "[INFO] no response object, request failed"
+        logging.info("] no response object, request failed")
     return ret
 
 
@@ -32,7 +32,7 @@ def attempt_contact(address, port):
     try:
         r = requests.head("http://{}:{}".format(address, port), timeout=1)
     except requests.RequestException, e:
-        print "[INFO] request to http://{}:{} failed, ignoring".format(address, port)
+        logging.info("] request to http://{}:{} failed, ignoring".format(address, port))
     if r is not None:
         if r.status_code == 404:  # a running client will return 404, otherwise should timeout
             ret = True

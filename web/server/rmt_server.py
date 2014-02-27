@@ -6,6 +6,7 @@ import urlparse
 from datetime import datetime
 from config import config
 from rfc3987 import parse
+import logging
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -70,8 +71,8 @@ class add:
             if result['authority'] != '':
                 return True
         except ValueError, e:
-            print "[ERROR] address given does not match URI definition"
-            print e
+            logging.error("address given does not match URI definition")
+            logging.exception(e)
         return success
 
     def GET(self):
@@ -82,7 +83,7 @@ class add:
 
     def POST(self):
         form = web.input()
-        print "[INFO] Trying to add {}".format(form.address)
+        logging.info("Trying to add {}".format(form.address))
         if self.try_host(form.address):
             parser = urlparse.urlparse(form.address)
             if parser.port:
@@ -131,7 +132,7 @@ class host:
             host_addr = a['address']
             host_port = a['port']
         if count > 1:
-            print "[ERROR] more than one host with id {}".format(host_id)
+            logging.error("more than one host with id {}".format(host_id))
 
         return [host_addr, host_port]
 
@@ -148,9 +149,8 @@ class host:
             url = "http://{}:{}".format(host_addr, host_port)
             r = requests.get(url + "/containers", timeout=timeout)
         except requests.RequestException as e:
-            print "[ERROR] Container request to", \
-            host_addr, "failed:"
-            print e
+            logging.error("Container request to,", host_addr, "failed:")
+            logging.exception(e)
             r = None
         containers = None
         if r:
@@ -179,16 +179,16 @@ class host:
             temp_response = requests.get('{}/temperature'.format(url), timeout=timeout)
             temp = temp_response.json()
         except requests.RequestException as e:
-            print "[ERROR] CPU/RAM/temperature request error:", e
-            print "CPU: ", cpu_response
-            print "RAM: ", ram_response
-            print "Temperature: ", temp_response
+            logging.error("CPU/RAM/temperature request error:")
+            logging.error("CPU:", cpu_response)
+            logging.error("RAM:", ram_response)
+            logging.error("Temperature: ", temp_response)
             cpu = None
             ram = None
             temp = None
         except ValueError as v:
-            print "[ERROR] Problem decoding CPU/RAM/Temperature"
-            print v
+            logging.error("Problem decoding CPU/RAM/Temperature")
+            logging.exception(v)
             temp = None
         cpu_usage = -1
         ram_usage = None
@@ -220,9 +220,9 @@ class delete:
 
     def GET(self, host_id):
         if dblayer.delete_host(host_id):
-            print "[INFO] deleted host " + host_id
+            logging.info("deleted host " + host_id)
         else:
-            print "[ERROR] host " + host_id + "not deleted, host not found"
+            logging.error("host " + host_id + "not deleted, host not found")
         web.redirect('/')
 
 

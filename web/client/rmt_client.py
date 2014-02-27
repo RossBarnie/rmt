@@ -4,6 +4,7 @@ import json
 import docker
 import command
 import subprocess
+import logging
 
 urls = (
     '/cpu', 'cpu',
@@ -28,7 +29,8 @@ class containers:
             client = docker.Client()
             containers = client.containers(all=True)
         except Exception as e:
-            print "[ERROR] Containers unavailable: ", e
+            logging.error("Containers unavailable")
+            logging.exception(e)
             containers = None           
         return prepare_message(containers)
 
@@ -58,7 +60,8 @@ class temp:
             temp = com.execute(return_output=True).get("comm_retval")
             temp = int(temp)
         except Exception, e:
-            print "[ERROR] temperature command error: ", e
+            logging.error("temperature command error")
+            logging.exception(e)
             return None
         return prepare_message(temp)
         

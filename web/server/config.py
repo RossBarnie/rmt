@@ -39,10 +39,10 @@ class config:
             self.temp_warning = parser.getint("resource_visual", "temp_warning")
             self.temp_danger = parser.getint("resource_visual", "temp_danger")
         except ConfigParser.ParsingError, e:
-            print "[ERROR] parsing config failed"
-            print e
+            logging.error("parsing config failed")
+            logging.exception(e)
             return
         except ConfigParser.NoSectionError, e:
-            print "[ERROR] parsing config, section not found"
-            print e
+            logging.error("parsing config, section not found")
+            logging.exception(e)
             return
