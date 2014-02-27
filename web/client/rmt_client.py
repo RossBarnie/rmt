@@ -37,7 +37,6 @@ class cpu:
 
     def GET(self):
         utilisation = psutil.cpu_times_percent(interval=1)
-        # TODO: fix cpu bug when running on pi
         return prepare_message(utilisation)
 
 
@@ -69,6 +68,7 @@ class reboot:
     def GET(self):
         subprocess.call(['reboot'])
         web.redirect('/')
+        #TODO: this redirect shouldn't be here, this is server-side logic
 
 if __name__ == "__main__":
     app.run()
