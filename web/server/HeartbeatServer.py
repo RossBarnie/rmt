@@ -85,8 +85,8 @@ def main():
     receiver.start()
     cfg = config()
     cfg.refresh_config()
-    print ('Threaded heartbeat server listening on port %d\n'
-        'press Ctrl-C to stop\n') % cfg.udp_port
+    print ('Threaded heartbeat server listening on port {}\n'
+           'press Ctrl-C to stop\n').format(cfg.udp_port)
     try:
         while True:
             cfg.refresh_config()

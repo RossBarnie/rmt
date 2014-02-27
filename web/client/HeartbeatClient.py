@@ -26,13 +26,13 @@ class config:
 
 def main():
     cfg = config()
-    print ('Sending heartbeat to IP %s , port %d\n'
-           'press Ctrl-C to stop\n') % (cfg.server_ip, cfg.server_port)
+    print ('Sending heartbeat to IP {} , port {}\n'
+           'press Ctrl-C to stop\n').format(cfg.server_ip, cfg.server_port)
     while True:
         cfg.refresh_config()
         hbSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         hbSocket.sendto('PyHB', (cfg.server_ip, cfg.server_port))
-        if __debug__: print 'Time: %s' % time.ctime()
+        if __debug__: print 'Time: {}'.format(time.ctime())
         time.sleep(cfg.beat_period)
 
 

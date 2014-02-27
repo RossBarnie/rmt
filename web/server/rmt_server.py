@@ -91,7 +91,7 @@ class add:
                 port = 80
             address = parser.hostname
             if not parser.scheme:
-                address = "http://%s" % address
+                address = "http://{}".format(address)
             dblayer.insert_new_address(address, port, form.stack)
             raise web.redirect('/')
         else:
@@ -131,7 +131,7 @@ class host:
             host_addr = a['address']
             host_port = a['port']
         if count > 1:
-            print "[ERROR] more than one host with id %d" % host_id
+            print "[ERROR] more than one host with id {}".format(host_id)
 
         return [host_addr, host_port]
 
@@ -172,11 +172,11 @@ class host:
         ram = None
         temp = None
         try:
-            cpu_response = requests.get('%s/cpu' % url, timeout=timeout)
+            cpu_response = requests.get('{}/cpu'.format(url), timeout=timeout)
             cpu = cpu_response.json()
-            ram_response = requests.get('%s/ram' % url, timeout=timeout)
+            ram_response = requests.get('{}/ram'.format(url), timeout=timeout)
             ram = ram_response.json()
-            temp_response = requests.get('%s/temperature' % url, timeout=timeout)
+            temp_response = requests.get('{}/temperature'.format(url), timeout=timeout)
             temp = temp_response.json()
         except requests.RequestException as e:
             print "[ERROR] CPU/RAM/temperature request error:", e

@@ -11,7 +11,7 @@ def get_hosts():
 
 
 def get_hosts_by_stack(stack):
-    return db.select('hosts', where="hosts.stack = '%s'" % stack, order="hosts.address")
+    return db.select('hosts', where="hosts.stack = '{}'".format(stack), order="hosts.address")
 
 
 def get_assigned():
@@ -31,17 +31,17 @@ def get_host_address_from_id(host_id):
 
 
 def insert_new_address(address, port, stack):
-    exists = db.select('hosts', where="address = '%s'" % address)
+    exists = db.select('hosts', where="address = '{}'".format(address))
     if exists:
-        db.update('hosts', where="hosts.address = '%s'" % address, port=port, stack=stack)
+        db.update('hosts', where="hosts.address = '{}'".format(address), port=port, stack=stack)
     else:
         db.insert('hosts', address=address, port=port, stack=stack)
 
 
 def update_heartbeat(address, time):
-    entry = db.select('hosts', where="hosts.address = '%s'" % address)
+    entry = db.select('hosts', where="hosts.address = '{}'".format(address))
     if entry:
-        db.update("hosts", where="hosts.address = $address", last_contacted=time, vars=locals())
+        db.update("hosts", where="hosts.address = '{}'".format(address), last_contacted=time, vars=locals())
     else:
         insert_new_heartbeat(address, time)
 
