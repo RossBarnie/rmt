@@ -110,7 +110,6 @@ class reboot:
         t = rebootThread(cfg.reboot_delay)
         t.start()
         return prepare_message("Rebooting in {} seconds".format(cfg.reboot_delay))
-        #TODO: this redirect shouldn't be here, this is server-side logic
 
 if __name__ == "__main__":
     logging.basicConfig(filename='client.log', level=logging.INFO)

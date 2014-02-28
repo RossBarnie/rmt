@@ -8,19 +8,25 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 		<div class="page-header">
 			<h1>
 				Host <small>$render['host_addr']:$render['host_port']</small>
-            </h1>
+			</h1>
 		</div>
-
 	</div>
+	$if render['reboot_msg'] != "":
+		<div class="row">
+			<div class="alert alert-dismissable alert-info">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<strong>Rebooting!</strong> Host client says, $render['reboot_msg']
+			</div>
+		</div>
 	<div class="row">
 		<div class="panel panel-default">
 			<table class="table table-responsive">
 				<thead>
-                <th class="text-center">
-                    <form role="form" method="get" id="delete-form" action="/delete/$render['host_id']">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </th>
+				<th class="text-center">
+					<form role="form" method="get" id="delete-form" action="/delete/$render['host_id']">
+						<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+					</form>
+				</th>
 				<th class="text-center">
 
 					CPU (%)
@@ -43,17 +49,17 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 					$else:
 						<span class="label label-default">Unknown</span>
 				</th>
-                <th class="text-center">
-                    <form role="form" method="get" id="history-form" action="/history/$render['host_id']">
-                        <button type="submit" class="btn btn-info btn-sm">History</button>
-                    </form>
-                </th>
-                <th class="text-center">
-                    $ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
-                    <form role="form" method="post" id="reboot-form">
-                        <button type="submit" class="btn btn-danger btn-sm">Reboot Host</button>
-                    </form>
-                </th>
+				<th class="text-center">
+					<form role="form" method="get" id="history-form" action="/history/$render['host_id']">
+						<button type="submit" class="btn btn-info btn-sm">History</button>
+					</form>
+				</th>
+				<th class="text-center">
+					$ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
+					<form role="form" method="post" id="reboot-form">
+						<button type="submit" class="btn btn-danger btn-sm">Reboot Host</button>
+					</form>
+				</th>
 				</thead>
 			</table>
 		</div>

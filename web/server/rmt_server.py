@@ -104,12 +104,22 @@ class add:
 
 class host:
 
+    reboot_msg = ""
+
     def POST(self, host_id):
         host_table = dblayer.get_host_address_from_id(host_id)
         host_info = self.get_host_address(host_id)
         address = "http://{}:{}".format(host_info[0], host_info[1])
-        requests.get(address + "/reboot", timeout=5)
-        web.redirect("/")
+        r = None
+        try:
+            r = requests.get(address + "/reboot", timeout=2)
+            logging.info("reboot request sent")
+        except requests.RequestException, e:
+            logging.warning("reboot request to {} failed".format(address))
+            logging.exception(e)
+        if r is not None:
+            host.reboot_msg = r.text
+        web.redirect("/host/{}".format(host_id))
 
     def get_state(self, value, warn_val, danger_val):
         state = RES_STATE_DEFAULT
@@ -137,7 +147,7 @@ class host:
         return [host_addr, host_port]
 
     def GET(self, host_id):
-        timeout = 5
+        timeout = 2
         render_dict = {}
         render_dict['host_id'] = host_id
         host_info = self.get_host_address(host_id)
@@ -149,7 +159,7 @@ class host:
             url = "http://{}:{}".format(host_addr, host_port)
             r = requests.get(url + "/containers", timeout=timeout)
         except requests.RequestException as e:
-            logging.error("Container request to,", host_addr, "failed:")
+            logging.error("Container request to {} failed:".format(host_addr))
             logging.exception(e)
             r = None
         containers = None
@@ -180,9 +190,9 @@ class host:
             temp = temp_response.json()
         except requests.RequestException as e:
             logging.error("CPU/RAM/temperature request error:")
-            logging.error("CPU:", cpu_response)
-            logging.error("RAM:", ram_response)
-            logging.error("Temperature: ", temp_response)
+            logging.error("CPU: {}".format(cpu_response))
+            logging.error("RAM: {}".format(ram_response))
+            logging.error("Temperature: {}".format(temp_response))
             cpu = None
             ram = None
             temp = None
@@ -205,14 +215,14 @@ class host:
         render_dict['ram_usage'] = ram_usage
         render_dict['cpu_usage'] = cpu_usage
         cfg = config()
-        cfg.refresh_config()
         cpu_state = self.get_state(cpu_usage, cfg.cpu_warning, cfg.cpu_danger)
         ram_state = self.get_state(ram_usage, cfg.ram_warning, cfg.ram_danger)
         temp_state = self.get_state(temp, cfg.temp_warning, cfg.temp_danger)
         render_dict['cpu_state'] = cpu_state
         render_dict['ram_state'] = ram_state
         render_dict['temp_state'] = temp_state
-
+        render_dict['reboot_msg'] = host.reboot_msg
+        host.reboot_msg = ""
         return render.host(render_dict)
 
 
