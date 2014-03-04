@@ -1,6 +1,7 @@
 $def with (render)
 $var title: rmt - Add Host
 $var cssfiles: /static/bootstrap/css/bootstrap.css
+$var scripts:
 
 <div class="container">
 	<div class="row">
@@ -75,7 +76,7 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css
 					<div class="panel-body">
 						<ul class="list-group">
 							$for host in render['unassigned']:
-							<li class="list-group-item">$host.address</li>
+							    <li class="list-group-item">$host.address</li>
 						</ul>
 
 					</div>

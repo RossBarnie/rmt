@@ -1,9 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-Placeholder for history page
-</body>
-</html>
+$def with (render)
+$var title: rmt - Host History
+$var cssfiles: /static/bootstrap/css/bootstrap.css
+$var scripts: /static/js/cpu.js https://www.google.com/jsapi
+
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h2>History <small>$render['address']</small></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                CPU
+            </div>
+            <div class="panel-body">
+            $if render['cpu_json'] is not None:
+                <div id="cpu_chart">
+                    <script type="text/javascript">
+                        drawChart({'rows':[{'c':[{'v':'Date(2014,1,28,1,42,11)'},{'v':6.6}]},{'c':[{'v':'Date(2014,1,28,1,42,50)'},{'v':6.9}]}],'cols':[{'type':'datetime','id':'timestamp','label':'Timestamp'},{'type':'number','id':'load','label':'Load'}]}, 'CPU Chart', 'cpu')
+                    </script>
+                </div>
+            $else:
+                <div class='text-danger'>No historical data found</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                RAM
+            </div>
+            <div class="panel-body">
+                Placeholder
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Temperature
+            </div>
+            <div class="panel-body">
+                Placeholder
+            </div>
+        </div>
+    </div>
+</div>

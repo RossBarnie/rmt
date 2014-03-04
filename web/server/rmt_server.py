@@ -7,17 +7,22 @@ from datetime import datetime
 from ConfigParser import SafeConfigParser
 import ConfigParser
 from rfc3987 import parse
+import json
+import gviz_api
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
 
 urls = (
     '/', 'index',
-    '/host/(.*)', 'host',
+    '/host/(\d+)', 'host',
     '/add', 'add',
-    '/delete/(.*)', 'delete'
+    '/delete/(\d+)', 'delete',
+    '/history/(\d+)', 'history'
 )
 app = web.application(urls, globals())
+
+web.config.debug = True
 
 HB_STATE_FINE = "success"
 HB_STATE_WARNING = "warning"
@@ -268,6 +273,66 @@ class delete:
         else:
             print "[ERROR] host " + host_id + "not deleted, host not found"
         web.redirect('/')
+
+
+class history:
+
+
+
+    def prepare_datetime(self, date):
+        dthandler = lambda obj: (
+            obj.isoformat()
+            if isinstance(obj, datetime)
+            else None)
+        return json.dumps(date, default=dthandler)
+
+    def GET(self, host_id):
+        # chart_template = """
+        #
+        #         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        #         <script type="text/javascript">
+        #             google.load("visualization", "1", {packages:["corechart"]});
+        #             function drawChart() {
+        #                 var data = google.visualization.DataTable(%(data)s);
+        #                 var options = {
+        #                     title: '%(title)s'
+        #                 };
+        #
+        #                 var chart = new google.visualization.LineChart(document.getElementById('%(resource)s_chart'));
+        #                 chart.draw(data, options);
+        #             }
+        #             google.setOnLoadCallback(drawChart);
+        #         </script>
+        #         <div id="%(resource)s_chart"></div>
+        # """
+        render_dict = {}
+        render_dict['address'] = "placeholder"
+        historical = dblayer.get_history_from_host_id(host_id)
+        cpu_desc = {"timestamp": ("datetime", "Timestamp"),
+                    "load": ("number", "Load")}
+        cpu = []
+        # ram = []
+        # temp = []
+        for entry in historical:
+            cpu += [{"timestamp": entry['effective'], "load": entry['cpu']}]
+            # ram += entry['effective'], entry['ram']
+            # temp += [[entry['effective'], entry['temperature']]]
+        cpu_table = gviz_api.DataTable(cpu_desc)
+        cpu_table.LoadData(cpu)
+
+        cpu_json = cpu_table.ToJSon(columns_order=("timestamp", "load"),
+                                    order_by="timestamp")
+        # render_dict['cpu_js'] = chart_template
+        render_dict['cpu_json'] = cpu_json
+        # cpu = [['DateTime', 'Load']]
+        # ram = [['DateTime', 'Used']]
+        # temp = [['DateTime', 'degrees C']]
+
+        # render_dict['cpu'] = json.dumps(cpu)
+        # print render_dict['cpu']
+        # render_dict['ram'] = ram
+        # render_dict['temp'] = temp
+        return render.history(render_dict)
 
 
 if __name__ == "__main__":

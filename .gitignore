@@ -1,1 +1,3 @@
 *.py[com]
+*.log
+.idea/

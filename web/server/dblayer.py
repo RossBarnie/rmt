@@ -1,6 +1,7 @@
 __author__ = 'ross'
 
 import web
+from datetime import datetime
 
 
 db = web.db.database(dbn='mysql', user='rmt-user', db='rmt')
@@ -64,5 +65,7 @@ def add_history(host_id, cpu, ram, temp, effective, expire):
     db.insert('history', host_id=host_id, cpu=cpu, ram=ram, temperature=temp, effective=effective, expiry=expire)
 
 
-def get_history_from_address(host_id):
-    db.select('history', where="history.host_id = '{}'".format(host_id))
+def get_history_from_host_id(host_id):
+    now = datetime.utcnow().isoformat(" ")
+    return db.select('history', where=
+                     "history.host_id = '{}' and '{}' between history.effective and history.expiry".format(host_id, now))

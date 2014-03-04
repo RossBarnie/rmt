@@ -4,8 +4,11 @@ $def with (content)
 <head>
     <title>$content.title</title>
     $if content.cssfiles:
-        $for f in content.cssfiles.split()
+        $for f in content.cssfiles.split():
             <link rel="stylesheet" href="$f" type="text/css"/>
+    $if content.scripts:
+        $for s in content.scripts.split():
+            <script type="text/javascript" src="$s"></script>
 
 </head>
 <body>

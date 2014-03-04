@@ -9,14 +9,14 @@ def get_resource(address, port, resource):
     ret = None
     r = None
     try:
-        r = requests.get("http://{}:{}/{}".format(address, port, resource), timeout=2)
+        r = requests.get("http://{}:{}/{}".format(address, port, resource), timeout=1)
     except requests.RequestException, e:
         print "[ERROR] request for {} failed".format(resource)
         print e
-    if r.status_code == 200:
+    if r is not None and r.status_code == 200:
         ret = r.json()
     else:
-        print "[WARNING] request to http://{}:{}/{} status code:{}".format(address, port, resource, r.status_code)
+        print "[WARNING] request to http://{}:{}/{} failed".format(address, port, resource)
     return ret
 
 
