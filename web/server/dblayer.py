@@ -12,7 +12,11 @@ def get_hosts():
 
 
 def get_hosts_by_stack(stack):
-    return db.select('hosts', where="hosts.stack = '%s'" % stack, order="hosts.address")
+    return db.select('hosts', where="hosts.stack = '{}'".format(stack), order="hosts.address")
+
+
+def get_host_from_id(host_id):
+    return db.select('hosts', where="hosts.id = '{}'".format(host_id))
 
 
 def get_assigned():

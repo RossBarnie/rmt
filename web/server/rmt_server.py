@@ -171,7 +171,7 @@ class host:
         return state
 
     def get_host_address(self, host_id):
-        host_table = dblayer.get_host_address_from_id(host_id)
+        host_table = dblayer.get_host_from_id(host_id)
 
         host_addr = ""
         host_port = -1
@@ -296,6 +296,7 @@ class history:
         render_dict['cpu_data'] = cpu
         render_dict['ram_data'] = ram
         render_dict['temp_data'] = temp
+        print render_dict
 
         return render.history(render_dict)
 
