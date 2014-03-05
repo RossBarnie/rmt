@@ -24,11 +24,18 @@ def get_unassigned():
 
 
 def get_host_id_from_address(address):
-    return db.select('hosts', where="hosts.address = " + address)
+    e = db.select('hosts', where="hosts.address = {}".format(address))
+    addresses = []
+    for i in e:
+        addresses += i['address']
+    return addresses
 
 
 def get_host_address_from_id(host_id):
-    return db.select('hosts', where="hosts.id = " + host_id)
+    e = db.select('hosts', where="hosts.id = {}".format(host_id))
+    for i in e:
+        return i['address']
+    return None
 
 
 def insert_new_address(address, port, stack):

@@ -9,7 +9,7 @@ def get_resource(address, port, resource):
     ret = None
     r = None
     try:
-        r = requests.get("http://{}:{}/{}".format(address, port, resource), timeout=1)
+        r = requests.get("http://{}:{}/{}".format(address, port, resource), timeout=2)
     except requests.RequestException, e:
         print "[ERROR] request for {} failed".format(resource)
         print e

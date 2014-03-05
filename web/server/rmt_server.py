@@ -9,6 +9,7 @@ import ConfigParser
 from rfc3987 import parse
 import json
 import gviz_api
+import calendar
 
 template_root = os.path.join(os.path.dirname(__file__))
 render = web.template.render(template_root + '/templates/', base='layout')
@@ -124,7 +125,7 @@ class add:
         return success
 
     def GET(self):
-        ren_dict = {}
+        ren_dict = dict()
         unassigned = dblayer.get_unassigned()
         ren_dict['unassigned'] = unassigned
         return render.add(ren_dict)
@@ -144,7 +145,7 @@ class add:
             dblayer.insert_new_address(address, port, form.stack)
             raise web.redirect('/')
         else:
-            ren_dict = {}
+            ren_dict = dict()
             ren_dict['unassigned'] = dblayer.get_unassigned()
             ren_dict['status'] = False
             return render.add(ren_dict)
@@ -186,7 +187,7 @@ class host:
 
     def GET(self, host_id):
         timeout = 5
-        render_dict = {}
+        render_dict = dict()
         render_dict['host_id'] = host_id
         host_info = self.get_host_address(host_id)
         render_dict['host_addr'] = host_addr = host_info[0]
@@ -244,7 +245,7 @@ class host:
         if cpu:
             cpu_usage = cpu[0] + cpu[1]
         if ram:
-            ram_dict = {}
+            ram_dict = dict()
             ram_dict['total'] = ram['ram_total'] / 1024.0 / 1024.0
             ram_dict['used'] = ram['ram_used'] / 1024.0 / 1024.0
             ram_usage = round(ram_dict['used'] / ram_dict['total'] * 100, 1)
@@ -277,61 +278,25 @@ class delete:
 
 class history:
 
-
-
-    def prepare_datetime(self, date):
-        dthandler = lambda obj: (
-            obj.isoformat()
-            if isinstance(obj, datetime)
-            else None)
-        return json.dumps(date, default=dthandler)
-
     def GET(self, host_id):
-        # chart_template = """
-        #
-        #         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        #         <script type="text/javascript">
-        #             google.load("visualization", "1", {packages:["corechart"]});
-        #             function drawChart() {
-        #                 var data = google.visualization.DataTable(%(data)s);
-        #                 var options = {
-        #                     title: '%(title)s'
-        #                 };
-        #
-        #                 var chart = new google.visualization.LineChart(document.getElementById('%(resource)s_chart'));
-        #                 chart.draw(data, options);
-        #             }
-        #             google.setOnLoadCallback(drawChart);
-        #         </script>
-        #         <div id="%(resource)s_chart"></div>
-        # """
-        render_dict = {}
-        render_dict['address'] = "placeholder"
+        render_dict = dict()
         historical = dblayer.get_history_from_host_id(host_id)
-        cpu_desc = {"timestamp": ("datetime", "Timestamp"),
-                    "load": ("number", "Load")}
+        adr = dblayer.get_host_address_from_id(host_id)
+        render_dict['address'] = "Address not found"
+        if adr is not None:
+            render_dict['address'] = adr
         cpu = []
-        # ram = []
-        # temp = []
+        ram = []
+        temp = []
         for entry in historical:
-            cpu += [{"timestamp": entry['effective'], "load": entry['cpu']}]
-            # ram += entry['effective'], entry['ram']
-            # temp += [[entry['effective'], entry['temperature']]]
-        cpu_table = gviz_api.DataTable(cpu_desc)
-        cpu_table.LoadData(cpu)
+            timestamp = calendar.timegm(entry['effective'].utctimetuple()) * 1000
+            cpu += [[timestamp, round(entry['cpu'], 0)]]
+            ram += [[timestamp, round(entry['ram'], 0)]]
+            temp += [[timestamp, round(entry['temperature'], 0)]]
+        render_dict['cpu_data'] = cpu
+        render_dict['ram_data'] = ram
+        render_dict['temp_data'] = temp
 
-        cpu_json = cpu_table.ToJSon(columns_order=("timestamp", "load"),
-                                    order_by="timestamp")
-        # render_dict['cpu_js'] = chart_template
-        render_dict['cpu_json'] = cpu_json
-        # cpu = [['DateTime', 'Load']]
-        # ram = [['DateTime', 'Used']]
-        # temp = [['DateTime', 'degrees C']]
-
-        # render_dict['cpu'] = json.dumps(cpu)
-        # print render_dict['cpu']
-        # render_dict['ram'] = ram
-        # render_dict['temp'] = temp
         return render.history(render_dict)
 
 

@@ -1,7 +1,7 @@
 $def with (render)
 $var title: rmt - Host History
 $var cssfiles: /static/bootstrap/css/bootstrap.css
-$var scripts: /static/js/cpu.js https://www.google.com/jsapi
+$var scripts: /static/js/flot/jquery.flot.js /static/js/charts.js
 
 <div class="container">
     <div class="row">
@@ -15,24 +15,20 @@ $var scripts: /static/js/cpu.js https://www.google.com/jsapi
                 CPU
             </div>
             <div class="panel-body">
-            $if render['cpu_json'] is not None:
-                <div id="cpu_chart">
-                    <script type="text/javascript">
-                        drawChart({'rows':[{'c':[{'v':'Date(2014,1,28,1,42,11)'},{'v':6.6}]},{'c':[{'v':'Date(2014,1,28,1,42,50)'},{'v':6.9}]}],'cols':[{'type':'datetime','id':'timestamp','label':'Timestamp'},{'type':'number','id':'load','label':'Load'}]}, 'CPU Chart', 'cpu')
-                    </script>
+            $if render['cpu_data'] != []:
+                <div id="cpu_chart" style="width: 400px; height: 200px">
                 </div>
             $else:
                 <div class='text-danger'>No historical data found</div>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
                 RAM
             </div>
             <div class="panel-body">
-                Placeholder
+                <div id="ram_chart" style="width: 400px; height: 200px">
+                </div>
             </div>
         </div>
     </div>
@@ -42,8 +38,15 @@ $var scripts: /static/js/cpu.js https://www.google.com/jsapi
                 Temperature
             </div>
             <div class="panel-body">
-                Placeholder
+                <div id="temp_chart" style="width: 500px; height: 200px">
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $$(document).ready(drawChart($render['cpu_data'], "#cpu_chart"));
+    $$(document).ready(drawChart($render['ram_data'], '#ram_chart'));
+    $$(document).ready(drawTemp($render['temp_data'], '#temp_chart'));
+</script>
+
