@@ -40,7 +40,7 @@ Database
 
 The database script needs to be run once on the server. To do this, simply use the following mysql command in a terminal:
 ```
-mysql --user=USER --password=PASSWORD < PATH\_TO\_RMT/web/db/createDb.sql
+mysql --user=USER --password=PASSWORD < PATH_TO_RMT/web/db/createDb.sql
 ```
 If at this point you receive an error that looks like:
 ```
@@ -56,7 +56,7 @@ Server
 
 Run the application with 
 ```
-PATH\_TO\_RMT/web/server/start\_server.sh 
+PATH\_TO\_RMT/web/server/start_server.sh 
 ```
 This command allows you to use a single argument to provide the IP:Port or just the port for the application. For example 
 ```
