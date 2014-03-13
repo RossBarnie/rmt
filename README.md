@@ -56,7 +56,7 @@ Server
 
 Run the application with 
 ```
-PATH\_TO\_RMT/web/server/start_server.sh 
+PATH_TO_RMT/web/server/start_server.sh 
 ```
 This command allows you to use a single argument to provide the IP:Port or just the port for the application. For example 
 ```
