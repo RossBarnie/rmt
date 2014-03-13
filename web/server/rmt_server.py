@@ -48,15 +48,15 @@ class index:
         return new_hosts
 
     def GET(self):
-        yellow_hosts = dblayer.get_hosts_by_stack("yellow")
-        red_hosts = dblayer.get_hosts_by_stack("red")
-        green_hosts = dblayer.get_hosts_by_stack("green")
-        grey_hosts = dblayer.get_hosts_by_stack("grey")
+        yellow_hosts = dblayer.get_hosts_by_tower("yellow")
+        red_hosts = dblayer.get_hosts_by_tower("red")
+        green_hosts = dblayer.get_hosts_by_tower("green")
+        blue_hosts = dblayer.get_hosts_by_tower("blue")
         yellow_hosts = self.get_hb_state(yellow_hosts)
         red_hosts = self.get_hb_state(red_hosts)
         green_hosts = self.get_hb_state(green_hosts)
-        grey_hosts = self.get_hb_state(grey_hosts)
-        hosts = {"yellow": yellow_hosts, "red": red_hosts, "green": green_hosts, "grey": grey_hosts}
+        blue_hosts = self.get_hb_state(blue_hosts)
+        hosts = {"yellow": yellow_hosts, "red": red_hosts, "green": green_hosts, "blue": blue_hosts}
         cfg = config()
         cfg.refresh_config()
         return render.index(hosts, cfg.site_refresh_time)
@@ -93,7 +93,7 @@ class add:
             address = parser.hostname
             if not parser.scheme:
                 address = "http://{}".format(address)
-            dblayer.insert_new_address(address, port, form.stack)
+            dblayer.insert_new_address(address, port, form.tower)
             raise web.redirect('/')
         else:
             ren_dict = {}

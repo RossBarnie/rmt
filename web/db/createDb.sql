@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS hosts (
 	id serial,
 	address varchar(64),
 	port int,
-	stack varchar(8),
+	tower varchar(8),
 	last_contacted timestamp,
 	primary key (id)
 );

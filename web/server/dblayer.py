@@ -10,16 +10,16 @@ def get_hosts():
     return db.select('hosts')
 
 
-def get_hosts_by_stack(stack):
-    return db.select('hosts', where="hosts.stack = '{}'".format(stack), order="hosts.address")
+def get_hosts_by_tower(tower):
+    return db.select('hosts', where="hosts.tower = '{}'".format(tower), order="hosts.address")
 
 
 def get_assigned():
-    return db.select('hosts', where="hosts.stack is not null")
+    return db.select('hosts', where="hosts.tower is not null")
 
 
 def get_unassigned():
-    return db.select('hosts', where="hosts.stack is null")
+    return db.select('hosts', where="hosts.tower is null")
 
 
 def get_host_id_from_address(address):
@@ -30,12 +30,12 @@ def get_host_address_from_id(host_id):
     return db.select('hosts', where="hosts.id = " + host_id)
 
 
-def insert_new_address(address, port, stack):
+def insert_new_address(address, port, tower):
     exists = db.select('hosts', where="address = '{}'".format(address))
     if exists:
-        db.update('hosts', where="hosts.address = '{}'".format(address), port=port, stack=stack)
+        db.update('hosts', where="hosts.address = '{}'".format(address), port=port, tower=tower)
     else:
-        db.insert('hosts', address=address, port=port, stack=stack)
+        db.insert('hosts', address=address, port=port, tower=tower)
 
 
 def update_heartbeat(address, time):

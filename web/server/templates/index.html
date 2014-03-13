@@ -37,12 +37,12 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
         </div>
 
         <div class="col-md-6 col-lg-3 col-sm-6">
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
-                    Grey Tower
+                    Blue Tower
                 </div>
                 <div class="list-group">
-                    $for host in hosts['grey']
+                    $for host in hosts['blue']
 
                         $ link = "/host/%s" % host.id
                         $ state = host.hbstate
