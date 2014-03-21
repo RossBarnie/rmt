@@ -163,17 +163,18 @@ class host:
             logging.exception(e)
             r = None
         containers = None
+
         if r:
             containers = r.json()
+        else:
+            logging.warning("No response object received from {}".format(host_addr))
         if containers:
             for container in containers:
                 del container['SizeRw']
                 del container['SizeRootFs']
                 container['Id'] = container['Id'][:5]
-                names = ""
-                for i in container['Names']:
-                    names = names + i
-                container['Names'] = names
+	    else:
+        	logging.warning("No containers received from {}".format(host_addr))
         render_dict['containers'] = containers
         cpu_response = None
         ram_response = None
@@ -204,13 +205,19 @@ class host:
         ram_usage = None
         if cpu:
             cpu_usage = cpu[0] + cpu[1]
+        else:
+            logging.warning("No CPU information received from {}".format(host_addr))
         if ram:
             ram_dict = {}
             ram_dict['total'] = ram['ram_total'] / 1024.0 / 1024.0
             ram_dict['used'] = ram['ram_used'] / 1024.0 / 1024.0
             ram_usage = round(ram_dict['used'] / ram_dict['total'] * 100, 1)
+        else:
+            logging.warning("No RAM information received from {}".format(host_addr))
         if temp:
             temp = round(temp/1000.0, 2)
+        else:
+            logging.warning("No Temperature information received from {}".format(host_addr))
         render_dict['temp'] = temp
         render_dict['ram_usage'] = ram_usage
         render_dict['cpu_usage'] = cpu_usage

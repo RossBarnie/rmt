@@ -50,8 +50,8 @@ class containers:
     def GET(self):
         containers = None
         try:
-            client = docker.Client()
-            containers = client.containers(all=True)
+	    client = docker.Client(base_url='unix://var/run/docker.sock',version='0.6',timeout=10)
+            containers = client.containers()#all=True)
         except Exception as e:
             logging.error("Containers unavailable")
             logging.exception(e)
