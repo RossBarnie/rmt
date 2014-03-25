@@ -8,8 +8,8 @@ from config import config
 from rfc3987 import parse
 import logging
 
-template_root = os.path.join(os.path.dirname(__file__))
-render = web.template.render(template_root + '/templates/', base='layout')
+root_dir = os.path.join(os.path.dirname(__file__))
+render = web.template.render(root_dir + '/templates/', base='layout')
 
 urls = (
     '/', 'index',
@@ -173,8 +173,8 @@ class host:
                 del container['SizeRw']
                 del container['SizeRootFs']
                 container['Id'] = container['Id'][:5]
-	    else:
-        	logging.warning("No containers received from {}".format(host_addr))
+        else:
+            logging.warning("No containers received from {}".format(host_addr))
         render_dict['containers'] = containers
         cpu_response = None
         ram_response = None
@@ -244,7 +244,8 @@ class delete:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='server.log', level=logging.INFO)
+    print "Logging information in " + root_dir + '/server.log'
+    logging.basicConfig(filename=root_dir + '/server.log', level=logging.INFO)
     logging.info("Started server")
     app.run()
     logging.info("Stopped server")

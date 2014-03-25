@@ -62,7 +62,7 @@ class Receiver(threading.Thread):
         cfg = config()
         cfg.refresh_config()
         self.recSocket.settimeout(cfg.check_timeout)
-        self.recSocket.bind((cfg.server_ip, cfg.udp_port))
+        self.recSocket.bind((socket.gethostbyname(cfg.server_ip), cfg.udp_port))
 
 
     def run(self):
@@ -72,7 +72,7 @@ class Receiver(threading.Thread):
                 if data == 'PyHB':
                     now = datetime.datetime.utcnow()
                     self.heartbeats[addr[0]] = now.isoformat(" ")
-                    dblayer.update_heartbeat(addr[0], now)
+                    dblayer.update_heartbeat(socket.gethostbyname(addr[0]), now)
             except socket.timeout:
                 pass
 

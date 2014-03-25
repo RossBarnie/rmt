@@ -8,6 +8,7 @@ import logging
 import threading
 import time
 import ConfigParser
+import os
 
 urls = (
     '/cpu', 'cpu',
@@ -50,7 +51,7 @@ class containers:
     def GET(self):
         containers = None
         try:
-	    client = docker.Client(base_url='unix://var/run/docker.sock',version='0.6',timeout=10)
+            client = docker.Client(base_url='unix://var/run/docker.sock',version='0.6',timeout=10)
             containers = client.containers()#all=True)
         except Exception as e:
             logging.error("Containers unavailable")
@@ -112,6 +113,9 @@ class reboot:
         return prepare_message("Rebooting in {} seconds".format(cfg.reboot_delay))
 
 if __name__ == "__main__":
+    root_dir = os.path.join(os.path.dirname(__file__))
+    print "Logging information in " + root_dir + '/client.log'
+    logging.basicConfig(filename=root_dir + '/client.log', level=logging.INFO)
     logging.basicConfig(filename='client.log', level=logging.INFO)
     logging.info("rmt_client started")
     app.run()
