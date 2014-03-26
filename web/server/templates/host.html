@@ -23,12 +23,6 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 			<table class="table table-responsive">
 				<thead>
 				<th class="text-center">
-					<form role="form" method="get" id="delete-form" action="/delete/$render['host_id']">
-						<button type="submit" class="btn btn-danger btn-sm">Delete</button>
-					</form>
-				</th>
-				<th class="text-center">
-
 					CPU (%)
 					$if render['cpu_usage'] >= 0:
 						<span class="label label-$render['cpu_state']">$render['cpu_usage']</span>
@@ -55,10 +49,15 @@ $var cssfiles: /static/bootstrap/css/bootstrap.css /static/style.css
 					</form>
 				</th>
 				-->
+      			<th class="text-center">
+					<form role="form" method="get" id="delete-form" action="/delete/$render['host_id']">
+						<button type="submit" class="btn btn-info btn-sm">Delete</button>
+					</form>
+				</th>
 				<th class="text-center">
 					$ link = "http://%s:%s" % (render['host_addr'], render['host_port'])
 					<form role="form" method="post" id="reboot-form">
-						<button type="submit" class="btn btn-danger btn-sm">Reboot Host</button>
+						<button type="submit" class="btn btn-info btn-sm">Reboot Host</button>
 					</form>
 				</th>
 				</thead>

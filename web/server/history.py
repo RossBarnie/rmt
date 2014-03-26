@@ -5,6 +5,7 @@ import requests
 import datetime
 import logging
 
+
 def get_resource(address, port, resource):
     ret = None
     r = None

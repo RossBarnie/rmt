@@ -113,10 +113,9 @@ class reboot:
         return prepare_message("Rebooting in {} seconds".format(cfg.reboot_delay))
 
 if __name__ == "__main__":
-    root_dir = os.path.join(os.path.dirname(__file__))
-    print "Logging information in " + root_dir + '/client.log'
-    logging.basicConfig(filename=root_dir + '/client.log', level=logging.INFO)
-    logging.basicConfig(filename='client.log', level=logging.INFO)
+    log_dir = os.path.dirname(os.path.realpath(__file__))
+    print "Logging information in " + log_dir + '/client.log'
+    logging.basicConfig(filename='{}/client.log'.format(log_dir), level=logging.INFO)
     logging.info("rmt_client started")
     app.run()
     logging.info("rmt_client stopped")

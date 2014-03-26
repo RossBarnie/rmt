@@ -244,8 +244,9 @@ class delete:
 
 
 if __name__ == "__main__":
-    print "Logging information in " + root_dir + '/server.log'
-    logging.basicConfig(filename=root_dir + '/server.log', level=logging.INFO)
+    log_dir = os.path.dirname(os.path.realpath(__file__))
+    print "Logging information in " + log_dir + '/server.log'
+    logging.basicConfig(filename='{}/server.log'.format(log_dir), level=logging.INFO)
     logging.info("Started server")
     app.run()
     logging.info("Stopped server")
